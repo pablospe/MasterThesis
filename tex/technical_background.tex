@@ -169,3 +169,84 @@ $\rho_i$ is a \texttt{LossFunction}. A \texttt{LossFunction} is a scalar functio
 Ceres Solver like most optimization packages, depends on being able to evaluate the value and the derivatives of each term in the objective function at arbitrary parameter values. Doing so correctly and efficiently is essential to getting good results. Ceres Solver provides a number of ways of doing so: Analytic and Numeric Derivatives. In order to use Automatic differentiation, it is necessary to define a \textbf{templated} cost functor\footnote{A functor is a class with an \texttt{operator()} member. And a cost functor is a functor which evaluate the residuals.}.
 
 
+
+\section{Image\_proc\_node and Camera model}
+
+\subsection{Image\_proc\_node}
+
+The package \texttt{image\_proc} node sit between the camera driver and vision processing nodes (see Figure \ref{fig:img_proc02}). \texttt{image\_proc} removes camera distortion from the raw image stream, and if necessary will convert Bayer or YUV422 format image data to color
+
+\begin{figure}[!htbp]
+ \centering
+ \includegraphics[width=0.7\textwidth]{images/img_proc02.png}
+ \caption{De-mosaics and undistorts the raw camera image stream.}
+ \label{fig:img_proc02}
+\end{figure}
+
+All processing is on demand. Color processing is performed only if there is a subscriber to a color topic. Rectification is performed only if there is a subscriber to a rectified topic. While there are no subscribers to output topics, \texttt{image\_proc} unsubscribes from the \texttt{image\_raw} and \texttt{camera\_info} topics.
+
+More info: \url{http://www.ros.org/wiki/image_proc}.
+
+
+\subsection{Camera model in ROS}
+
+Figure \ref{fig:camera_model02} is a diagram of the camera coordinate system assumed. It is a right-handed system, with the world X and Y aligned with the image x and y.
+
+The camera model used in ROS is the same coordinate system used in OpenCV. It differs from the coordinate system of Harley and Zisserman in \cite{HZ2}, which has Z forward, Y up, and X to the left (looking towards +Z).
+
+\begin{figure}[!htbp]
+ \centering
+ \includegraphics[width=0.35\textwidth]{images/camera_model02.png}
+ \caption{The camera coordinate system assumed.}
+ \label{fig:camera_model02}
+\end{figure}
+
+More info: \url{http://www.ros.org/wiki/image_pipeline/CameraInfo}.
+
+\subsubsection{Derivation diagram}
+
+Figure \ref{fig:camera_model03} is a diagram of the various images that are conceptually derivable from the CameraInfo message\footnote{CameraInfo message is a ROS message where all the camera information is saved.}. The boxed variables are present in this message.
+
+\begin{figure}[!htbp]
+ \centering
+ \includegraphics[width=0.75\textwidth]{images/camera_model03.png}
+ \caption{Derivation diagram}
+ \label{fig:camera_model03}
+\end{figure}
+
+\subsubsection{Projection onto the original image}
+
+Starting with an initial 3D point $X$, the position of the corresponding image point is found by going right-to-left in the upper half of the diagram \ref{fig:camera_model03}. The process is summarized by the following equations:
+\[
+\begin{array}{rcll}
+X' &=& [R,t]\,X  & \quad \quad \texttt{transform} \\
+sx &=& X'        & \quad \quad \texttt{projection} \\
+x* &=& d(x)      & \quad \quad \texttt{distortion} \\
+q  &=& Kx*       & \quad \quad \texttt{pixel coordinates}
+\end{array}
+\]
+This process uses the $K$ camera matrix and $D$ distortion vector. Ignoring the transform $T$, you can find the projection of a point $X$' into the original camera frame using these equations. First, the $3D$ point $X$' is projected onto the normalized, undistorted image via a projection operation (division by $Z$). Then the distortion coefficients are used in the function $d()$ to move the point to its distorted position, still in a normalized image. Finally, the normalized image is converted to a pixel-coordinate image by applying the camera matrix to each image point.
+
+
+\subsubsection{Rectification}
+In this context, rectification is the process of transforming the input image into an output image with the distortion corrected (Figure \ref{fig:camera_model03}), and optionally transformed by rotation, in-plane translation, and scale.
+
+In the case of a \textbf{monocular rectification} with distortion correction. To transform a pixel in the input image into one in the output image, it is sent through the $K - D - R - K'$ series of transformations. $K - D$ gets to the normalized, undistorted image; the rotation $R$ is the identity because we don't want to rotate the image; and then $K'$ converts back to pixel coordinates in the output image. In this case, since there is no rotation, translation, or scaling from the original image, $K = K'$ , and only the $K$ and $D$ elements of CameraInfo are needed.
+
+An example of this process can be seen in Figure \ref{fig:rectification}.
+\begin{figure}[!htbp]
+\centering
+  \subfigure[\textbf{image\_raw}: original camera image, Bayered and distorted]
+  {
+    \centering\includegraphics[height=0.25\textheight]{images/img_proc_left_raw.png}
+    \label{fig:img_proc_left}
+  }
+  \subfigure[\textbf{image\_rect}: rectified image, de-Bayered and undistorted (amount of black border may vary depending on calibration)]
+  {
+    \centering\includegraphics[height=0.25\textheight]{images/img_proc_rectified.png}
+    \label{fig:img_proc_rect}
+  }
+  \caption{Rectification (and de-Bayer) process performed by \texttt{\texttt{image\_proc}\_node}.}
+   \label{fig:rectification}
+\end{figure}
+

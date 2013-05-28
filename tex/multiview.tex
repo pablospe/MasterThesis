@@ -3,19 +3,8 @@
 
 The connexion between the previous defined components will be provided here, explaining the way they are working together in both the acquisition and estimation process. Recall the goal is to recalibration multiples cameras, using the PR2 as a real example, but focused in the estimation part.
 
-\section{Preliminary}
+\section{Preliminary: cameras in the PR2}
 
-\subsection{Camera model in ROS}
-
-* Camera model (in the ROS context)
-* Rect Images (no distortion)
-
-* Type of messages
-*
-
-\subsection{PR2 cameras}
-
-The camera configuration can be seen in Figure \ref{fig:pr2_cameras}.
 The PR2 has 6 cameras in its head:
 \begin{itemize*}
  \item 2 narrow range. Topics: \texttt{wide\_right\_rect} and \texttt{wide\_left\_rect}.
@@ -24,9 +13,11 @@ The PR2 has 6 cameras in its head:
  \item 1 High definition. Topic: \texttt{Prosilica\_rect}.
 \end{itemize*}
 
+\noindent
+The initial camera configuration can be seen in Figure \ref{fig:pr2_cameras}, provided in the URDF. This is the information to be calibrated.
 \begin{figure}[!htbp]
  \centering
- \includegraphics[width=0.75\textwidth]{images/screenshots/PR2_cameras.png}
+ \includegraphics[width=0.55\textwidth]{images/screenshots/PR2_cameras.png}
  \caption{Coordinate system of all the cameras in the PR2 head.}
  \label{fig:pr2_cameras}
 \end{figure}
@@ -49,13 +40,23 @@ The acquisition part was already implemented, and a full description can be foun
 
 \subsection{Data collection}
 
-In order to sufficiently constrain the non-linear optimization (see \cite{pr2_calibration_paper}), it is needed to collect a large amount of data, and manually collecting this calibration data can be tedious. By having the PR2 hold a checkerboard in its gripper (Figure~\ref{fig:pr2_holdind_cb}), a total of 30 checkerboard poses measurements are collected for each hand. Also, 4 samples of a large checkerboard that is far from the robot in order to help with far-field calibration. This data is saved in a ROS bag (section~\ref{sec:rosbag}) and posteriorly processed for the calibration package.
+In order to sufficiently constrain the non-linear optimization (see \cite{pr2_calibration_paper}), it is needed to collect a large amount of data, and manually collecting this calibration data can be tedious. By having the PR2 hold a checkerboard in its gripper (Figure~\ref{fig:pr2_holdind_cb}), a total of 30 checkerboard poses measurements are collected for each hand. Also, 4 samples of a \textbf{large checkerboard} that is far from the robot in order to help with far-field calibration. This data is saved in a ROS bag (section~\ref{sec:rosbag}) and posteriorly processed for the calibration package.
 
 \begin{figure}[!htbp]
- \centering
- \includegraphics[width=0.5\textwidth]{images/pr2_holdind_cb.png}
- \caption{The PR2 holding a checkerboard pattern.}
+  \centering
+  \raisebox{3em}{
+    \subfigure
+    {
+      \includegraphics[width=0.5\textwidth]{images/pr2_holdind_cb.png}
+    }
+  }
+  \subfigure
+  {
+    \includegraphics[width=0.35\textwidth]{images/checkerboard01.png}
+  }
+  \caption{The PR2 holding a checkerboard pattern.}
  \label{fig:pr2_holdind_cb}
 \end{figure}
+
 
 
