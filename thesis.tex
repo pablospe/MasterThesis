@@ -1,0 +1,194 @@
+\documentclass[twoside]{report} %,draft,openright]
+
+\usepackage{epsf,graphicx}
+\usepackage{latexsym,amssymb}
+\usepackage{setspace,cite}
+% for margins left, right top bottom
+\usepackage{anysize}
+\marginsize{4cm}{2.5cm}{4cm}{4cm}
+
+%\usepackage{draft} %draft option - doesn't put full figures in -
+            % useful when editing
+
+%does the headers on the pages - keep in
+\usepackage{fancyhdr}
+
+\usepackage{subfigure}
+
+% \usepackage[pdftex]{graphicx}  % Enable pdflatex
+% \usepackage{movie15}           % for .gif
+
+
+\usepackage{hyperref}        %  Hipervínculos
+\hypersetup{                 %  Hipervínculos setup
+    bookmarksopen=false,
+    bookmarksnumbered=true,
+    pdfpagemode=UseOutlines,  % None, UseThumbs, UseOutlines (show bookmarks), FullScreen
+    colorlinks=true,     % color link text, not a box around them.
+    linkcolor=black,      % color for normal internal links.
+    anchorcolor=black,   % color for anchor text.
+    citecolor=blue,      % color for bibligraphical citations in text.
+    filecolor=black,     % color for URLs which open local files.
+    menucolor=black,     % color for Acrobat menu items.
+%     pagecolor=black,     % color for links to other pages.
+    urlcolor=blue,      % color for linked URLs.
+    breaklinks=false,    % Allows link text to break across.
+    pdfstartview={FitBH},
+    pdfview={FitBH},
+    %hyperindex=true,
+    pageanchor=false
+}
+
+\usepackage{enumerate}   % Entorno enumerate mejorado
+
+%omitting any of these makes the thesis compile without the omitted
+%chapter - good for editing single chapters.
+% \includeonly{header,intro,background,appendix}
+
+
+% \newcommand{\ros}{\textit{ROS}}
+% \newcommand{\rosbag}{\textit{ROS bag}}
+% \newcommand{\rviz}{\textit{RViz}}
+% \newcommand{\urdf}{\textit{Urdf}}
+% \newcommand{\tf}{\textit{tf}}
+% \newcommand{\ceres}{\textit{Ceres Solver}}
+\newcommand{\ros}{ROS}
+\newcommand{\rosbag}{ROS bag}
+\newcommand{\rviz}{RViz}
+\newcommand{\urdf}{Urdf}
+\newcommand{\tf}{tf}
+% \newcommand{\PR2}{PR2}
+\newcommand{\ceres}{Ceres Solver}
+
+
+%%% Equation and float numbering
+\usepackage{chngcntr}
+\counterwithout{figure}{chapter}
+
+% \usepackage{caption}
+\usepackage{subcaption}
+
+\newenvironment{itemize*}%
+  {\begin{itemize}%
+    \vspace*{-\itemsep}
+    \setlength{\itemsep}{0pt}%
+    \setlength{\parskip}{0pt}}%
+  {\end{itemize}\vspace*{-\itemsep}}
+
+
+
+\usepackage{listings}
+
+% \renewcommand*{\lstlistingname}{Code}
+%
+% \lstset{ %
+%   language=Matlab,                % the language of the code
+%   basicstyle=\footnotesize,       % the size of the fonts that are used for the code
+%   numbers=left,                   % where to put the line-numbers
+%   numberstyle=\tiny\color{gray},  % the style that is used for the line-numbers
+%   stepnumber=1,                   % the step between two line-numbers. If it's 1, each line
+%                                   % will be numbered
+%   numbersep=5pt,                  % how far the line-numbers are from the code
+%   backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+%   showspaces=false,               % show spaces adding particular underscores
+%   showstringspaces=false,         % underline spaces within strings
+%   showtabs=false,                 % show tabs within strings adding particular underscores
+%   frame=single,                   % adds a frame around the code
+%   rulecolor=\color{black},        % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens (green here))
+%   tabsize=2,                      % sets default tabsize to 2 spaces
+%   captionpos=b,                   % sets the caption-position to bottom
+%   breaklines=true,                % sets automatic line breaking
+%   breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+%   title=\lstname,                   % show the filename of files included with \lstinputlisting;
+%                                   % also try caption instead of title
+%   keywordstyle=\bf\color{blue},          % keyword style
+%   commentstyle=\bf\color{dkgreen},       % comment style
+%   stringstyle=\color{mauve},         % string literal style
+%   escapeinside={\%*}{*)},            % if you want to add a comment within your code
+%   morekeywords={*,...}               % if you want to add more keywords to the set
+% }
+
+
+\usepackage[font=small,labelfont=bf]{caption}
+
+
+\begin{document}
+\newpage
+
+%Puts page numbering of preamble in roman and of main body of thesis in
+%arabic. Also defines how chapters and sections are made
+\pagenumbering{arabic}
+\setcounter{page}{1} \pagestyle{fancy}
+\renewcommand{\chaptermark}[1]{\markboth{\chaptername%
+\ \thechapter:\,\ #1}{}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection\,\ #1}}
+
+%DEFINES TITLE PAGE, and contains abstract, acknowledgements, etc.
+
+\input{tex/header.tex}
+% \input{tex/abstract.tex}
+
+
+\doublespacing
+
+%\pagestyle{empty}
+\pagenumbering{roman}
+\setcounter{page}{1} \pagestyle{plain}
+
+
+\tableofcontents
+
+% \listoffigures
+% \listoftables
+
+
+
+% \input{tex/acknowledgments.tex}
+
+
+\pagestyle{fancy}
+\newpage
+%sets up headers for lefthand and righthand pages. To alter, edit
+%these lines and the chaptermark/sectionmark lines above
+\addtolength{\headheight}{3pt} \fancyhead{}
+\fancyhead[LE]{\sl\leftmark} \fancyhead[LO,RE]{\rm\thepage}
+\fancyhead[RO]{\sl\rightmark} \fancyfoot[C,L,E]{}
+\pagenumbering{arabic}
+
+%\singlespacing
+%\doublespacing
+\onehalfspacing
+
+
+% Links internos en rojo
+\hypersetup{
+    linkcolor=red,
+}
+
+
+% \input{tex/intro.tex}
+\input{tex/introduction.tex}
+% \input{tex/background.tex}
+
+\input{tex/stereo.tex}
+\input{tex/technical_background.tex}
+\input{tex/multiview.tex}
+
+\input{tex/implementation.tex}
+
+
+\appendix
+% \input{tex/appendix.tex}
+
+
+
+%   this is for BibTeX.  remove if you plan to write the references in the document
+\bibliographystyle{unsrt}
+\bibliography{refs}
+
+
+%adds the bibliography to the table of contents
+\addcontentsline{toc}{chapter}
+         {\protect\numberline{Bibliography\hspace{-96pt}}}
+
+\end{document}
