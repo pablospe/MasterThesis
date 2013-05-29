@@ -229,10 +229,10 @@ This process uses the $K$ camera matrix and $D$ distortion vector. Ignoring the 
 
 
 \subsubsection{Rectification}
+\label{sec:rectification}
 In this context, rectification is the process of transforming the input image into an output image with the distortion corrected (Figure \ref{fig:camera_model03}), and optionally transformed by rotation, in-plane translation, and scale.
 
 In the case of a \textbf{monocular rectification} with distortion correction. To transform a pixel in the input image into one in the output image, it is sent through the $K - D - R - K'$ series of transformations. $K - D$ gets to the normalized, undistorted image; the rotation $R$ is the identity because we don't want to rotate the image; and then $K'$ converts back to pixel coordinates in the output image. In this case, since there is no rotation, translation, or scaling from the original image, $K = K'$ , and only the $K$ and $D$ elements of CameraInfo are needed.
-
 An example of this process can be seen in Figure \ref{fig:rectification}.
 \begin{figure}[!htbp]
 \centering
@@ -249,4 +249,44 @@ An example of this process can be seen in Figure \ref{fig:rectification}.
   \caption{Rectification (and de-Bayer) process performed by \texttt{\texttt{image\_proc}\_node}.}
    \label{fig:rectification}
 \end{figure}
+
+
+
+\section{OpenCV}
+
+OpenCV is also integrated in ROS and used in many parts of this thesis, in special the function called solvePnP and Rodrigues's formula detailed next.
+
+
+\subsection{Rodrigues' formula}
+
+Converts a rotation matrix to a rotation vector\footnote{This is an axis-angle representation, an using the vector module as the angle that describe the magnitude of the rotation about the axis.} or vice versa. A rotation vector is a convenient and most compact representation of a rotation matrix (since any rotation matrix has just 3 degrees of freedom). More info: \url{http://docs.opencv.org/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html#rodrigues}.
+
+
+
+\subsection{SolvePnP}
+\label{sec:solvePnP}
+
+%TODO
+Without loss of generality, it is assumed the model plane (checkerboard) is on $Z=0$ of the world coordinate system. Let's denote the $i^{th}$ column of the rotation matrix $R$ by $r_i$, we have... TODO!!
+
+More info: \url{http://docs.opencv.org/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html#solvepnp}
+
+
+% \subsection{Camera model with distortion}
+%
+% %TODO
+% ( I will might delete this section since I don't use distortion!! )
+%
+% ROS uses the same the camera model with distortion than OpenCV, see in Figure~\ref{fig:camera_model_opencv}.
+%
+% \begin{figure}[!htbp]
+%  \centering
+%  \includegraphics[width=0.45\textwidth]{images/camera_model_opencv.png}
+%  \caption{OpenCV Camera model with distortion}
+%  \label{fig:camera_model_opencv}
+% \end{figure}
+%
+
+
+
 

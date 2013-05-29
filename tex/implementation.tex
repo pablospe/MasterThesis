@@ -1,18 +1,24 @@
-\chapter{Implementation details}
+\chapter{Some implementation details}
 \label{cha:implementation}
 
-Software engineering decisions, problems, solutions?, resignations...
+Software engineering decisions, problems, solutions?, and resignations... :P
 
 
 ----
 
 Why re-implement the calibration estimation package?
 
-Why re-implement the robot\_state\_publisher?
+Why re-implement the robot\_state\_publisher? Explain the how to Publish the /tf tree?
+Why KDL? KDL structures are not modificable, so it was needed to re-create KDL once the urdf is updated.
+
+RViz and Markers! Republish everytime!
+
+% \subsection{}
+* Quaternions: used to avoid singularities...
+
+* Data/Views in different order... explain... some views aren't visible for all the cameras.
 
 (optional)
-Why KDL?
-
 Why Ceres?
 
 
@@ -21,7 +27,8 @@ Why Ceres?
 \chapter{Extra work}
 \label{cha:extra}
 
-(this is more than optional)
+(this chapter is more than optional)
+
 Work not related to the thesis, but time consuming, like commits in Ceres, fixed bugs in URDF dom (export\_urdf() function), etc...
 
 

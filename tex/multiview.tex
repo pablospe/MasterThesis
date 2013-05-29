@@ -1,9 +1,26 @@
 \chapter{Multi-view recalibration}
 \label{cha:multi-view calibration}
 
-The connexion between the previous defined components will be provided here, explaining the way they are working together in both the acquisition and estimation process. Recall the goal is to recalibration multiples cameras, using the PR2 as a real example, but focused in the estimation part.
+\vspace*{-3ex}
+The connexion between the previous defined components will be provided here, explaining the way they are working together in both the acquisition and estimation process. Recall the goal is to recalibration multiples cameras, using the PR2 as a real example, and focused in the estimation part.
 
-\section{Preliminary: cameras in the PR2}
+\section{Overview}
+\label{sec:estimation_overview}
+
+In the Figure \ref{fig:high_level_flow} a high level chart flow is presented: \textbf{1.} camera measurements are taken (checkerboard corners, as is explained in section \ref{sec:acquisition}); \textbf{2.} then estimation process is optimizing a non-linear function in order to estimate the cameras poses; \textbf{3.} publishing the result to \texttt{/tf}.
+
+\begin{figure}[!htbp]
+ \centering
+ \includegraphics[width=0.5\textwidth]{images/high_level_flow_02.png}
+ \caption{High level flow.}
+ \label{fig:high_level_flow}
+\end{figure}
+
+The point \textbf{3.} is optional, but it was considered by design to have this option from the beginning, since it was desired a visual feedback of the estimation process. An alternative to \textbf{3.} is to save the result as a new and unique URDF for the particular robot it is been calibrated.
+
+
+
+\subsection*{Preliminary: cameras in the PR2}
 
 The PR2 has 6 cameras in its head:
 \begin{itemize*}
@@ -14,7 +31,7 @@ The PR2 has 6 cameras in its head:
 \end{itemize*}
 
 \noindent
-The initial camera configuration can be seen in Figure \ref{fig:pr2_cameras}, provided in the URDF. This is the information to be calibrated.
+The initial camera configuration can be seen in Figure \ref{fig:pr2_cameras}, provided in the URDF. \textbf{Note}: this is the information to be calibrated.
 \begin{figure}[!htbp]
  \centering
  \includegraphics[width=0.55\textwidth]{images/screenshots/PR2_cameras.png}
@@ -30,7 +47,7 @@ The initial camera configuration can be seen in Figure \ref{fig:pr2_cameras}, pr
 \section{Acquisition process}
 \label{sec:acquisition}
 
-The acquisition part was already implemented, and a full description can be found in the paper  \cite{pr2_calibration_paper} and in the ROS tutorials for the PR2 calibration package.
+This is the \textit{point \textbf{1.}} in the overview (Figure \ref{fig:high_level_flow}). The acquisition part was already implemented, and a full description can be found in the paper  \cite{pr2_calibration_paper} and in the ROS tutorials for the PR2 calibration package.
 
 % The thesis is focused in the estimation part but, in order to reach part, it is necessary first to do some comments regarding the process and
 %
@@ -40,7 +57,16 @@ The acquisition part was already implemented, and a full description can be foun
 
 \subsection{Data collection}
 
-In order to sufficiently constrain the non-linear optimization (see \cite{pr2_calibration_paper}), it is needed to collect a large amount of data, and manually collecting this calibration data can be tedious. By having the PR2 hold a checkerboard in its gripper (Figure~\ref{fig:pr2_holdind_cb}), a total of 30 checkerboard poses measurements are collected for each hand. Also, 4 samples of a \textbf{large checkerboard} that is far from the robot in order to help with far-field calibration. This data is saved in a ROS bag (section~\ref{sec:rosbag}) and posteriorly processed for the calibration package.
+In order to sufficiently constrain the non-linear optimization (see \cite{pr2_calibration_paper}), it is needed to collect a large amount of data, and manually collecting this calibration data can be tedious. By having the PR2 hold a checkerboard in its gripper (Figure~\ref{fig:pr2_holdind_cb}), a total of 30 checkerboard poses measurements are collected for each hand. Also, 4 samples of a \textbf{large checkerboard} that is far from the robot in order to help with far-field calibration (see Figure \ref{fig:data_collection01}). This data is saved in a ROS bag (section~\ref{sec:rosbag}) and posteriorly processed for the calibration package.
+
+\noindent
+\newpage
+\textbf{Notes}:
+\begin{itemize*}
+  \item It is important to mention at this point the 2D measurements are obtained from the rectified images (section \ref{sec:rectification}). Therefore, working with distortion is happily avoided.
+  \item It is assumed all cameras have been intrinsically calibrated in a previous stage.
+\end{itemize*}
+
 
 \begin{figure}[!htbp]
   \centering
@@ -57,6 +83,73 @@ In order to sufficiently constrain the non-linear optimization (see \cite{pr2_ca
   \caption{The PR2 holding a checkerboard pattern.}
  \label{fig:pr2_holdind_cb}
 \end{figure}
+
+
+\begin{figure}[!htbp]
+ \centering
+ \includegraphics[width=0.7\textwidth]{images/data_collection01.png}
+ \caption{Example of \textit{one} sample from 4 different view, using the large checkerboard.}
+ \label{fig:data_collection01}
+\end{figure}
+
+
+
+
+\subsection{Visualization}
+
+This is the \textit{point \textbf{3.}} in the overview (Figure \ref{fig:high_level_flow}). This part is optional, but it was crucial to understand what was happening and to debug problems and solutions.
+
+Even tough publishing to /tf is not difficult to do, it has been time consuming and more details will be given in chapter \ref{cha:implementation}, where implementation details are given\footnote{Publish to /tf is mentioned here to be consistent with the overview.}.
+
+For now, let's us concentrate in 3D points visualization, more precisely RViz Markers.
+
+\subsubsection{Visual Markers}
+
+Since checkerboards are seen from multiple views, and idea to see if the system is calibrated is to overlap the 3D obtained from individuals cameras using solvePnP, described in section \ref{sec:solvePnP}.
+
+
+
+\subsection{Per view optimization}
+
+In order to test the system before going to the global optimization (optimizing the parameters with data in all views), a local optimization per view is performed to see if the process is going in the right path.
+
+TODO....
+
+
+
+\subsection{Global optimization}
+
+TODO...
+
+
+
+\section{Estimation process}
+\label{sec:estimation}
+
+TODO...
+
+% Needing to estimate relative poses of several cameras or many poses of a single moving camera is a somewaht common problem. It is often solve by jointly estimating the set of camera poses along with 3D features that are detected by some set of cameras. This approach is called bundle adjustment \cite{BA}.
+%
+% We have in condition now explain the estimation process, all the needed components have been explained.
+
+% The initial configuration of the cameras is given by the URDF
+
+
+\subsection{Optimization}
+
+% TODO
+
+Given the set of many measurements from multiple sensors of multiple views of
+targets in the world, we want to find the maximum likelihood estimate of cameras poses attached to the a robot head that best explains our measurements. In order to define the residual $r$, it is need to compute the expected measurements to our actual measurements:
+% \[
+%  r_ij = ...
+% \]
+
+
+
+------------------------------
+TODO.... (more pictures)
+
 
 
 

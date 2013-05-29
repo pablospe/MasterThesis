@@ -64,6 +64,7 @@
 %%% Equation and float numbering
 \usepackage{chngcntr}
 \counterwithout{figure}{chapter}
+\counterwithout{equation}{chapter}
 
 % \usepackage{caption}
 \usepackage{subcaption}
@@ -114,6 +115,8 @@
 \makeatletter
 \setlength{\@fptop}{0pt}
 \makeatother
+
+\usepackage{amsmath}
 
 
 \begin{document}
@@ -182,7 +185,7 @@
 
 
 \appendix
-% \input{tex/appendix.tex}
+\input{tex/appendix.tex}
 
 
 
