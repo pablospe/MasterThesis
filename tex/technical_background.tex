@@ -1,7 +1,11 @@
 \chapter{Technical background}
 \label{cha:technical_background}
 
-In this chapter, a briefly explanation of the used tools is given. Links to the official documentation is provided for further reading. This chapter does not intend to be a full documentation of each component, since their developments is very dynamic.
+In this chapter, a briefly explanation of the used tools is given: ROS (Robot Operating System)~\cite{ROS}, RViz (ROS visualizer) \cite{RViz}, KDL (Kinematics and Dynamics Library) \cite{KDL}, Ceres Solver (non-linear least squares minimizer) \cite{ceres} and others.
+
+Links to the official documentation is provided for further reading. This chapter does not intend to be a full documentation of each component, since their developments is very dynamic.
+
+This chapter is focused in individual explanations, and in further chapters, the relationship between these tools will be provided.
 
 \section{ROS}
 \label{sec:ros}
@@ -20,29 +24,30 @@ Summarizing ROS has two basic ``sides'':
 
 The main goal of this thesis is to be a \textbf{ROS calibration package}, in replacement of the old one \cite{pr2_calibration}. For further learning about ROS, an excellent documentation can be found in: \url{www.ros.org}.
 
-\subsection{Roscpp}
-\label{sec:roscpp}
-
-Another primary ROS goal is \textit{``language independence''}: the ROS framework is easy to implement in any modern programming language. It is already implemented in:
-\begin{itemize*}
- \item Python (\url{http://www.ros.org/wiki/rospy}) and,
- \item C++ (\url{http://www.ros.org/wiki/roscpp}).
-\end{itemize*}
-
-\noindent
-Roscpp has been used in this thesis.
-
+\subsection{Nodes and Topics}
+\label{sec:nodes}
+Packages is a set of nodes, and topics are named buses over which nodes exchange messages.
 
 \subsection{RViz}
 \label{sec:rviz}
 
-It is a 3D visualization tool for ROS. It is used to visualize the \textbf{/tf} (section \ref{sec:tf}) and the \textbf{URDF} robot model (section \ref{sec:urdf}). It is also possible to send messages with basic shapes (cube, sphere, cylinder, arrow) to RViz. This Visual markers has been used in order to visualize the 3D points (see Figure \ref{fig:rviz}). For more information: \url{http://www.ros.org/wiki/rviz}.
+It is a 3D visualization tool for ROS. It is used to visualize \textbf{/tf} (section \ref{sec:tf}) and \textbf{URDF} robot models (section \ref{sec:urdf}). Sending messages with basic shapes (cube, sphere, cylinder, arrow) to RViz is also possible. These Visual markers are used to display 3D points, see Figure \ref{fig:rviz}. For more information: \url{http://www.ros.org/wiki/rviz}.
 \begin{figure}[!htbp]
  \centering
- \includegraphics[width=0.95\textwidth]{images/screenshots/rviz.png}
+ \includegraphics[width=0.7\textwidth]{images/screenshots/rviz.png}
  \caption{RViz interface.}
  \label{fig:rviz}
 \end{figure}
+
+\vspace*{-2ex}
+\subsection{Roscpp}
+\label{sec:roscpp}
+
+Another primary ROS goal is \textit{``language independence''}: the ROS framework is easy to implement in any modern programming language, and it is already implemented in:
+\begin{itemize*}
+ \item Python (\url{http://www.ros.org/wiki/rospy}) and,
+ \item C++ (\url{http://www.ros.org/wiki/roscpp}).
+\end{itemize*}
 
 \subsection{PR2}
 \label{sec:PR2}
@@ -55,7 +60,6 @@ The PR2 (Personal Robot, version 2) is a Willow Garage which has two 7-DOF arms 
  \label{fig:pr2}
 \end{figure}
 
-
 \subsection{URDF}
 \label{sec:urdf}
 
@@ -64,7 +68,7 @@ For more information: \url{http://www.ros.org/wiki/urdf}.
 \begin{figure}[!htbp]
  \centering
  \includegraphics[width=0.35\textwidth]{images/screenshots/PR2_urdf.png}
- \caption{PR2 urdf in RViz}
+ \caption{PR2 URDF model in RViz}
  \label{fig:pr2_urdf}
 \end{figure}
 
@@ -72,9 +76,9 @@ For more information: \url{http://www.ros.org/wiki/urdf}.
 \subsection{/tf}
 \label{sec:tf}
 
-The package tf lets the user keep track of multiple coordinate frames over time. tf maintains the relationship between coordinate frames in a tree structure buffered in time, and lets the user transform points, vectors, etc between any two coordinate frames at any desired point in time.
+The package /tf lets the user keep track of multiple coordinate frames over time. /tf maintains the relationship between coordinate frames in a tree structure buffered in time, and lets the user transform points, vectors, etc between any two coordinate frames at any desired point in time.
 
-A robotic system typically has many 3D coordinate frames that change over time (see Figure~\ref{fig:tf}), such as a world frame, base frame, gripper frame, head frame, etc. tf keeps track of all these frames over time.
+A robotic system typically has many 3D coordinate frames that change over time (see Figure~\ref{fig:tf}), such as a world frame, base frame, gripper frame, head frame, etc. /tf keeps track of all these frames over time.
 For more information: \url{http://www.ros.org/wiki/tf}.
 
 \begin{figure}[!htbp]
@@ -97,7 +101,7 @@ For more information: \url{http://www.ros.org/wiki/tf}.
 \subsection{ROS bag and rqt}
 \label{sec:rosbag}
 
-All the components for a simulated environment are done, and only is needed a way to reproduce events/messages. This is done with ROS bag, which is a set of tools for recording from and playing back to ROS topics. It avoids deserialization and reserialization of the messages. More info: \url{http://www.ros.org/wiki/rosbag}.
+All the components for a simulated environment are implemented, and it is needed a way to reproduce events/messages. This is performed by ROS bag, which is a set of tools for recording from and playing back to ROS topics. It avoids deserialization and reserialization of the messages. More info: \url{http://www.ros.org/wiki/rosbag}.
 
 \begin{figure}[!htbp]
  \centering
@@ -115,66 +119,9 @@ A second tool described here is a rqt plugin which allows to play a ROS bag easi
  \label{fig:rosbag02}
 \end{figure}
 
-
-\section{KDL}
-\label{sec:KDL}
-
-KDL (\textbf{K}inematics and \textbf{D}ynamics \textbf{L}ibrary) defines a tree structure to represent the kinematic and dynamic parameters of a robot mechanism (see Figure \ref{fig:KDL}). \textit{kdl\_parser} provides tools to construct a KDL tree from an XML robot representation in URDf format.
-
-\begin{figure}[!htbp]
- \centering
- \includegraphics[width=0.7\textwidth]{images/KDL02.png}
- \caption{Example of KDL tree.}
- \label{fig:KDL}
-\end{figure}
-
-This library is mainly used for:
-\begin{itemize*}
- \item 3D frame and vector transformations,
- \item forward kinematics (given joint angles compute the position of the end-effector\footnote{An \textit{end-effector} is the device at the end of a robotic arm, designed to interact with the environment, in our case the cameras.}).
-\end{itemize*}
-
-
-For more information: \url{http://www.ros.org/wiki/kdl}.
-
-\section{Ceres}
-\label{sec:Ceres}
-
-Ceres Solver \cite{ceres} is a portable C++ library that allows modeling and solving large complicated \textbf{non-linear least squares} problems. It is used at Google to estimate the pose of Street View cars, aircrafts, and satellites; to build 3D models for PhotoTours; to estimate satellite image sensor characteristics, and more.
-
-Ceres Solver is an important component in this thesis because, among others, it has very good features like:
-\begin{itemize*}
-\item A friendly API: build your objective function one term at a time.
-\item Automatic Analytic Derivatives.
-\item Specialized solvers for bundle adjustment problems in computer vision.
-% \item Iterative linear solvers for general sparse and bundle adjustment problems.
-\end{itemize*}
-
-It will too long to make a good introduction to Ceres, but a briefly description of important points, obtained from the tutorial, can be found in the following. The excellent tutorial is available in: \url{http://homes.cs.washington.edu/~sagarwal/ceres-solver/tutorial.html}.
-
-\subsection*{Modeling}
-Ceres solves robustified non-linear least squares problems of the form:
-\[
-\frac{1}{2}\sum_{i=1} \rho_i\left(\left\|f_i\left(x_{i_1}, ... ,x_{i_k}\right)\right\|^2\right).
-\]
-
-The expression $\rho_i\left(\left\|f_i\left(x_{i_1},...,x_{i_k}\right)\right\|^2\right)$ is known as a \texttt{ResidualBlock}, where $f_i(\cdot)$ is a \texttt{Cost Function} that depends on the parameter blocks $\left[x_{i_1},... , x_{i_k}\right]$. In most optimization problems small groups of scalars occur together. For example, the three components of a translation vector and the four components of the quaternion that define the pose of a camera. We refer to such a group of small scalars as a \texttt{ParameterBlock}. Of course a \texttt{ParameterBlock} can just be a single parameter.
-
-$\rho_i$ is a \texttt{LossFunction}. A \texttt{LossFunction} is a scalar function that is used to reduce the influence of outliers on the solution of non-linear least squares problems. As a special case, when $\rho_i(x) = x$, i.e., the identity function, we get the more familiar non-linear least squares problem.
-\[
- \frac{1}{2}\sum_{i=1} \left\|f_i\left(x_{i_1}, ... ,x_{i_k}\right)\right\|^2.
-\]
-
-\subsection*{Derivatives}
-Ceres Solver like most optimization packages, depends on being able to evaluate the value and the derivatives of each term in the objective function at arbitrary parameter values. Doing so correctly and efficiently is essential to getting good results. Ceres Solver provides a number of ways of doing so: Analytic and Numeric Derivatives. In order to use Automatic differentiation, it is necessary to define a \textbf{templated} cost functor\footnote{A functor is a class with an \texttt{operator()} member. And a cost functor is a functor which evaluate the residuals.}.
-
-
-
-\section{Image\_proc\_node and Camera model}
-
 \subsection{Image\_proc\_node}
 
-The package \texttt{image\_proc} node sit between the camera driver and vision processing nodes (see Figure \ref{fig:img_proc02}). \texttt{image\_proc} removes camera distortion from the raw image stream, and if necessary will convert Bayer or YUV422 format image data to color
+The node \texttt{image\_proc} sit between the camera driver and vision processing nodes (see Figure \ref{fig:img_proc02}). \texttt{image\_proc} removes camera distortion from the raw image stream, and if necessary will convert Bayer or YUV422 format image data to color
 
 \begin{figure}[!htbp]
  \centering
@@ -183,6 +130,7 @@ The package \texttt{image\_proc} node sit between the camera driver and vision p
  \label{fig:img_proc02}
 \end{figure}
 
+% \noindent
 All processing is on demand. Color processing is performed only if there is a subscriber to a color topic. Rectification is performed only if there is a subscriber to a rectified topic. While there are no subscribers to output topics, \texttt{image\_proc} unsubscribes from the \texttt{image\_raw} and \texttt{camera\_info} topics.
 
 More info: \url{http://www.ros.org/wiki/image_proc}.
@@ -225,14 +173,14 @@ x* &=& d(x)      & \quad \quad \texttt{distortion} \\
 q  &=& Kx*       & \quad \quad \texttt{pixel coordinates}
 \end{array}
 \]
-This process uses the $K$ camera matrix and $D$ distortion vector. Ignoring the transform $T$, you can find the projection of a point $X$' into the original camera frame using these equations. First, the $3D$ point $X$' is projected onto the normalized, undistorted image via a projection operation (division by $Z$). Then the distortion coefficients are used in the function $d()$ to move the point to its distorted position, still in a normalized image. Finally, the normalized image is converted to a pixel-coordinate image by applying the camera matrix to each image point.
+This process uses the $K$ camera matrix and $D$ distortion vector. Ignoring the transform $T$, the projection of a point $X$' can be found into the original camera frame using these equations. First, the $3D$ point $X$' is projected onto the normalized, undistorted image via a projection operation (division by $Z$). Then the distortion coefficients are used in the function $d()$ to move the point to its distorted position, still in a normalized image. Finally, the normalized image is converted to a pixel-coordinate image by applying the camera matrix to each image point.
 
 
 \subsubsection{Rectification}
 \label{sec:rectification}
 In this context, rectification is the process of transforming the input image into an output image with the distortion corrected (Figure \ref{fig:camera_model03}), and optionally transformed by rotation, in-plane translation, and scale.
 
-In the case of a \textbf{monocular rectification} with distortion correction. To transform a pixel in the input image into one in the output image, it is sent through the $K - D - R - K'$ series of transformations. $K - D$ gets to the normalized, undistorted image; the rotation $R$ is the identity because we don't want to rotate the image; and then $K'$ converts back to pixel coordinates in the output image. In this case, since there is no rotation, translation, or scaling from the original image, $K = K'$ , and only the $K$ and $D$ elements of CameraInfo are needed.
+In the case of a \textbf{monocular rectification} with distortion correction, to transform a pixel in the input image into one in the output image, it is sent through the $K - D - R - K'$ series of transformations. $K - D$ gets to the normalized, undistorted image; the rotation $R$ is the identity because we don't want to rotate the image; and then $K'$ converts back to pixel coordinates in the output image. In this case, since there is no rotation, translation, or scaling from the original image, $K = K'$ , and only the $K$ and $D$ elements of CameraInfo are needed.
 An example of this process can be seen in Figure \ref{fig:rectification}.
 \begin{figure}[!htbp]
 \centering
@@ -252,24 +200,104 @@ An example of this process can be seen in Figure \ref{fig:rectification}.
 
 
 
+\section{KDL}
+\label{sec:KDL}
+
+KDL (\textbf{K}inematics and \textbf{D}ynamics \textbf{L}ibrary) defines a tree structure to represent the kinematic and dynamic parameters of a robot mechanism (see Figure \ref{fig:KDL}). \textit{kdl\_parser} provides tools to construct a KDL tree from an XML robot representation in URDf format.
+
+\begin{figure}[!htbp]
+ \centering
+ \includegraphics[width=0.7\textwidth]{images/KDL02.png}
+ \caption{Example of KDL tree.}
+ \label{fig:KDL}
+\end{figure}
+
+This library is mainly used for:
+\begin{itemize*}
+ \item 3D frame and vector transformations,
+ \item forward kinematics (given joint angles compute the position of the end-effector\footnote{An \textit{end-effector} is the device at the end of a robotic arm, designed to interact with the environment, in our case the cameras.}).
+\end{itemize*}
+
+
+For more information: \url{http://www.ros.org/wiki/kdl}.
+
+\section{Ceres}
+\label{sec:Ceres}
+
+Ceres Solver \cite{ceres} is a portable C++ library that allows modeling and solving large complicated \textbf{non-linear least squares} problems. It is used at Google to estimate the pose of Street View cars, aircrafts, and satellites; to build 3D models for PhotoTours; to estimate satellite image sensor characteristics, and more.
+
+Ceres Solver is an important component in this thesis because it has very good features like, among others:
+\begin{itemize*}
+\item A friendly API: build your objective function one term at a time.
+\item Automatic Analytic Derivatives.
+\item Specialized solvers for bundle adjustment problems in computer vision.
+% \item Iterative linear solvers for general sparse and bundle adjustment problems.
+\end{itemize*}
+
+It will too long to make a good introduction to Ceres, but a briefly description of important points, obtained from the tutorial, can be found in the following. The excellent tutorial is available in: \url{http://homes.cs.washington.edu/~sagarwal/ceres-solver/tutorial.html}.
+
+\subsection*{Modeling}
+Ceres solves robustified non-linear least squares problems of the form:
+\begin{equation}
+\frac{1}{2}\sum_{i=1} \rho_i\left(\left\|f_i\left(x_{i_1}, ... ,x_{i_k}\right)\right\|^2\right).
+\end{equation}
+
+The expression $\rho_i\left(\left\|f_i\left(x_{i_1},...,x_{i_k}\right)\right\|^2\right)$ is known as a \texttt{ResidualBlock}, where $f_i(\cdot)$ is a \texttt{Cost Function} that depends on the parameter blocks $\left[x_{i_1},... , x_{i_k}\right]$. In most optimization problems small groups of scalars occur together. For example, the three components of a translation vector and the four components of the quaternion that define the pose of a camera. Such groups of small scalars are called \texttt{ParameterBlock}.
+
+$\rho_i$ is a \texttt{LossFunction}. A \texttt{LossFunction} is a scalar function that is used to reduce the influence of outliers on the solution of non-linear least squares problems. As a special case, when $\rho_i(x) = x$, i.e., the identity function, it leads to the more familiar non-linear least squares problem.
+\[
+ \frac{1}{2}\sum_{i=1} \left\|f_i\left(x_{i_1}, ... ,x_{i_k}\right)\right\|^2.
+\]
+
+\subsection*{Derivatives}
+Ceres Solver like most optimization packages, depends on being able to evaluate the value and the derivatives of each term in the objective function at arbitrary parameter values. Doing so correctly and efficiently is essential to getting good results. Ceres Solver provides a number of ways of doing so: Analytic and Numeric Derivatives. In order to use Automatic differentiation, it is necessary to define a \textbf{templated} cost functor\footnote{A functor is a class with an \texttt{operator()} member. And a cost functor is a functor which evaluate the residuals.}.
+
+
+
 \section{OpenCV}
 
-OpenCV is also integrated in ROS and used in many parts of this thesis, in special the function called solvePnP and Rodrigues's formula detailed next.
+OpenCV is integrated in ROS and used in many parts of this thesis, in special the function called solvePnP and Rodrigues's formula detailed next.
 
 
 \subsection{Rodrigues' formula}
 
-Converts a rotation matrix to a rotation vector\footnote{This is an axis-angle representation, an using the vector module as the angle that describe the magnitude of the rotation about the axis.} or vice versa. A rotation vector is a convenient and most compact representation of a rotation matrix (since any rotation matrix has just 3 degrees of freedom). More info: \url{http://docs.opencv.org/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html#rodrigues}.
+Converts a rotation matrix to a rotation vector\footnote{This is an axis-angle representation, an using the vector module as the angle that describe the magnitude of the rotation about the axis.} and vice versa. A rotation vector is a convenient and most compact representation of a rotation matrix (since any rotation matrix has just 3 degrees of freedom).
+
+\begin{figure}[!htbp]
+ \centering
+ \includegraphics[width=0.5\textwidth]{images/rodrigues01.png}
+ \caption{Rodrigues' formula}
+ \label{fig:rodrigues}
+\end{figure}
+
+% More info: \url{http://docs.opencv.org/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html#rodrigues}.
 
 
 
 \subsection{SolvePnP}
 \label{sec:solvePnP}
 
-%TODO
-Without loss of generality, it is assumed the model plane (checkerboard) is on $Z=0$ of the world coordinate system. Let's denote the $i^{th}$ column of the rotation matrix $R$ by $r_i$, we have... TODO!!
-
-More info: \url{http://docs.opencv.org/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html#solvepnp}
+Without loss of generality, it is assumed the model plane (checkerboard) is on $Z=0$ of the world coordinate system. Let's denote the $i^{th}$ column of the rotation matrix $R$ by $r_i$. From (\ref{eq:pinhole}),
+\begin{equation}
+  s\,\begin{pmatrix}
+      x \\
+      y \\
+      1
+\end{pmatrix}
+= K\, [r_1~~r_2~~r_3~~t]\,\begin{pmatrix}
+      X \\
+      Y \\
+      0 \\
+      1
+\end{pmatrix}
+= K\, [r_1~~r_2~~t]\begin{pmatrix}
+      X \\
+      Y \\
+      1
+\end{pmatrix}
+\end{equation}
+Therefore, a model point $\mathbf{X}$ and its image $\mathbf{x}$ are related by a homography. SolvePnP finds this homography minimizing the re-projection error. In others words, it finds the rotation and translation from the checkerboard coordinate system to the camera coordinate system.
+% More info: \url{http://docs.opencv.org/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html#solvepnp}
 
 
 % \subsection{Camera model with distortion}

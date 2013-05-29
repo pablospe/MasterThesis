@@ -18,7 +18,7 @@ TODO...
 \subsection{Pinhole camera model}
 
 A 2D point is denoted by $\mathbf{x} = [x,y]^T$. A 3D point is denoted by $\mathbf{X} = [X,Y,Z]^T$. It is used $\mathbf{\tilde{x}}$ to denote the augmented vector by adding $1$ as the last element: $\mathbf{\tilde{x}} = [x,y,1]^T$ and $\mathbf{\tilde{X}} = [X,Y,Z,1]^T$. A camera is modeled by the usual pinhole: the relationship between a 3D point $\mathbf{X}$ and its image projection $\mathbf{x}$ is given by
-\begin{equation}
+\begin{equation} \label{eq:pinhole}
   s\,\mathbf{\tilde{x}} = K\, [R | t]\,\mathbf{\tilde{X}} \quad \mbox{with } K =
     \begin{pmatrix}
       f_x & 0   & c_x \\
@@ -66,4 +66,4 @@ TODO...
 
 TODO...
 
-
+(I don't know if I will finish this :( )
