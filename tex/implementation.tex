@@ -9,6 +9,7 @@ Software engineering decisions, problems, solutions?, and resignations... :P
 Why re-implement the calibration estimation package?
 
 Why re-implement the robot\_state\_publisher? Explain the how to Publish the /tf tree?
+Y porque cuando se actualizaba empezaba a danzar, por los 0.5 seg. de retraso en los fixed links.
 Why KDL? KDL structures are not modificable, so it was needed to re-create KDL once the urdf is updated.
 
 RViz and Markers! Republish everytime!
@@ -20,6 +21,20 @@ RViz and Markers! Republish everytime!
 
 (optional)
 Why Ceres?
+
+
+
+
+\section{Code}
+\subsection{Cost function}
+\label{sec:ceres_impl}
+
+
+% \section{...}
+
+\subsection{Creating model point for solvePnP}
+\label{sec:solvePnP_impl}
+It is was necessary to create a function that
 
 
 \section{Fails and solutions}

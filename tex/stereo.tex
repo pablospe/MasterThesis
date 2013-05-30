@@ -19,7 +19,7 @@ TODO...
 
 A 2D point is denoted by $\mathbf{x} = [x,y]^T$. A 3D point is denoted by $\mathbf{X} = [X,Y,Z]^T$. It is used $\mathbf{\tilde{x}}$ to denote the augmented vector by adding $1$ as the last element: $\mathbf{\tilde{x}} = [x,y,1]^T$ and $\mathbf{\tilde{X}} = [X,Y,Z,1]^T$. A camera is modeled by the usual pinhole: the relationship between a 3D point $\mathbf{X}$ and its image projection $\mathbf{x}$ is given by
 \begin{equation} \label{eq:pinhole}
-  s\,\mathbf{\tilde{x}} = K\, [R | t]\,\mathbf{\tilde{X}} \quad \mbox{with } K =
+  s\,\mathbf{\tilde{x}} = K\, [R ~~ t]\,\mathbf{\tilde{X}} \quad \mbox{with } K =
     \begin{pmatrix}
       f_x & 0   & c_x \\
       0   & f_y & c_y \\
@@ -34,6 +34,7 @@ where $s$ is an arbitrary scale factor; $(R,t)$ called the extrinsic parameters,
 
 
 \subsection{Bundle adjustment}
+\label{sec:BA}
 
 Needing to estimate relative poses of several cameras or many poses of a single moving camera is a common problem. It is often solved by jointly estimating the set of camera poses along with 3D features that are detected by some set of cameras. This approach is called bundle adjustment (BA) \cite{BA}.
 
@@ -46,14 +47,28 @@ Bundle adjustment algorithms take the following three data as inputs (see Figure
 
 \begin{figure}[!htbp]
  \centering
- \includegraphics[width=0.45\textwidth]{images/BA.png}
+ \includegraphics[width=0.45\textwidth]{images/BA.pdf}
  \caption{Three points $X_1, X_2, X_3$ are observed by three cameras $P_1, P_2, P_3$.}
  \label{fig:BA}
 \end{figure}
 
+\noindent
+Bundle adjustment optimize both the scene $X_i$ and camera parameters $P_j$ by minimizing the sum of squared re-projection errors:
+\[
+ \sum _{i=1}^{n}\sum _{j\in V_{i}}\left( x_{ij}-P_{i}X_{j}\right)^2
+\]
+
+\noindent
+\textbf{Note:} Ceres Solver has been utilized to solve this optimization problem, see section \ref{sec:ceres} for a short introduction to Ceres and section \ref{sec:ceres_impl} to see the cost function used in the later defined estimation process.
+
 
 \subsection{Triangulation}
+\label{sec:triangulation}
 TODO...
+
+\subsubsection{N-View Triangulation}
+\label{sec:nview_triangulation}
+
 
 \subsection{Camera resection}
 TODO...

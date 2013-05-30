@@ -222,7 +222,7 @@ This library is mainly used for:
 For more information: \url{http://www.ros.org/wiki/kdl}.
 
 \section{Ceres}
-\label{sec:Ceres}
+\label{sec:ceres}
 
 Ceres Solver \cite{ceres} is a portable C++ library that allows modeling and solving large complicated \textbf{non-linear least squares} problems. It is used at Google to estimate the pose of Street View cars, aircrafts, and satellites; to build 3D models for PhotoTours; to estimate satellite image sensor characteristics, and more.
 
@@ -277,7 +277,7 @@ Converts a rotation matrix to a rotation vector\footnote{This is an axis-angle r
 \subsection{SolvePnP}
 \label{sec:solvePnP}
 
-Without loss of generality, it is assumed the model plane (checkerboard) is on $Z=0$ of the world coordinate system. Let's denote the $i^{th}$ column of the rotation matrix $R$ by $r_i$. From (\ref{eq:pinhole}),
+Without loss of generality, it is assumed the model plane (i.e., a checkerboard) is on $Z=0$ of the world coordinate system. Let's denote the $i^{th}$ column of the rotation matrix $R$ by $r_i$. From~(\ref{eq:pinhole}),
 \begin{equation}
   s\,\begin{pmatrix}
       x \\
@@ -296,7 +296,10 @@ Without loss of generality, it is assumed the model plane (checkerboard) is on $
       1
 \end{pmatrix}
 \end{equation}
-Therefore, a model point $\mathbf{X}$ and its image $\mathbf{x}$ are related by a homography. SolvePnP finds this homography minimizing the re-projection error. In others words, it finds the rotation and translation from the checkerboard coordinate system to the camera coordinate system.
+Therefore, a model point $\mathbf{X}$ and its image $\mathbf{x}$ are related by a homography; and this can be used for solvePnP (see more details in the implementation chapter \ref{sec:solvePnP_impl}).
+
+More precisely, SolvePnP give a solution to the \textbf{PnP problem} --the estimation of the pose of a calibrated camera from $n$ 3D-to-2D point correspondences-- minimizing the reprojection error. In others words, it finds the rotation and translation from the checkerboard coordinate system to the camera coordinate system.
+
 % More info: \url{http://docs.opencv.org/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html#solvepnp}
 
 
