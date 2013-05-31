@@ -146,6 +146,7 @@ The estimation process is divided in turn in three stages: \textbf{initializatio
 
 
 \subsection{Initialization}
+\label{sec:initialization}
 
 \subsubsection*{Get cameras}
 
@@ -206,16 +207,6 @@ As it stated in section \ref{sec:BA}, BA takes \textbf{measurements}, \textbf{3D
 \]
 
 
-
-
-\subsection{Per view optimization}
-
-In order to test the system before going to the complete optimization (optimizing the parameters with data in all views), a ``local'' per view optimization (only one checkerboard sample) was performed to see if the process was going in the right path. This previous stage before using all the data was important to find errors.
-
-TODO... Move to implementation chapter!!
-
-
-
 \subsection{Optimizer}
 
 This part will be considered in the implementation chapter (section \ref{sec:ceres_impl}).
@@ -223,11 +214,42 @@ This part will be considered in the implementation chapter (section \ref{sec:cer
 
 \subsection{Update URDF}
 
-TODO....
+In the robot tree the cameras are in the leaf, an example can be seen in \ref{fig:tf02}. The relation between the cameras and its immediate father is the real parameters to be optimize, and it will be explained soon how to extract this information from the estimation process result. First, more notion is introduced in Figure \ref{fig:update01}:
+\begin{itemize*}
+ \item[-]  \{$\mathbf{f_i}$\}: immediate father of camera $i$.
+
+ \item[-]  \{$\mathbf{T_{f_i}}$\}: transformation from \{$\mathbf{f_i}$\} to \{\textbf{Robot}\}.
+
+ \item[-]  \{$\mathbf{T_{Rel_i}}$\}: transformation from \{$\mathbf{C_i}$\} to \{$\mathbf{f_i}$\}.
+
+\end{itemize*}
+
+\begin{figure}[!htbp]
+ \centering
+ \includegraphics[width=0.5\textwidth]{images/update01.pdf}
+ \caption{Introducing \textit{camera father} notation.}
+ \label{fig:update01}
+\end{figure}
+
+The transformations defined in the initialization section \ref{sec:initialization} can be rewritten,
+\begin{align}
+ T_i &= T_{f_i} \, T_{Rel_i} \\
+ H_i &= T_{Rel_i}^{-1} \, T_{f_i}^{-1} \, T_0
+\end{align}
 
 
+The \textit{\textbf{update process}} is illustrate in Figure \ref{fig:update02}.
+A new $H'_i$ is obtained from the optimization process, and the new $\mathbf{T'_{Rel_i}}$ can be calculated as follows:
+\begin{equation}
+ H'_i = T_{Rel_i}^{' -1} \, T_{f_i}^{-1} \, T_0  \quad \Rightarrow \quad  \mathbf{T'_{Rel_i}} = T_{f_i}^{-1} \, T_0 \, H_{i}^{' -1}
+\end{equation}
 
-------------------
+\begin{figure}[!htbp]
+ \centering
+ \includegraphics[width=0.5\textwidth]{images/update02.pdf}
+ \caption{Old calibration ({\color{red} red}) vs new calibration ({\color{blue} blue}). Dashed arrow is the \textit{calibration error}.}
+ \label{fig:update02}
+\end{figure}
 
 
 \subsection{Results}
@@ -317,7 +339,7 @@ A visible comparison of this bias can been noted in Figure \ref{fig:reprojection
     \includegraphics[width=0.45\textwidth]{images/reprojection01.pdf}
     \label{reprojection01}
   }
-  \caption{Re-projection error after optimization}
+  \caption{Re-projection error after optimization.}
   \label{fig:reprojection}
 \end{figure}
 
@@ -326,8 +348,8 @@ A visible comparison of this bias can been noted in Figure \ref{fig:reprojection
 More statistics (median, mean and standard deviation) can be observed in Figure \ref{fig:stats}.
 \begin{figure}[!htbp]
  \centering
- \includegraphics[width=0.65\textwidth]{images/stats.pdf}
- \caption{Median, mean, std after optimization}
+ \includegraphics[width=0.6\textwidth]{images/stats.pdf}
+ \caption{Median, mean, std after optimization.}
  \label{fig:stats}
 \end{figure}
 
