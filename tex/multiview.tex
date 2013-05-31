@@ -213,6 +213,7 @@ This part will be considered in the implementation chapter (section \ref{sec:cer
 
 
 \subsection{Update URDF}
+\label{sec:update_urdf}
 
 In the robot tree the cameras are in the leaf, an example can be seen in \ref{fig:tf02}. The relation between the cameras and its immediate father is the real parameters to be optimize, and it will be explained soon how to extract this information from the estimation process result. First, more notion is introduced in Figure \ref{fig:update01}:
 \begin{itemize*}
@@ -259,7 +260,7 @@ In this section, a visual comparison is given. First, result before and after op
 
 \subsubsection{Visual comparison}
 
-Only two of a total of 64 checkerboard samples are shown here: checkerboard in hand in Figure \ref{fig:cal_hand}, and checkerboard free in the world in Figure \ref{fig:cal_free}. It is possible to appreciate that after the optimization process the checkerboards are more close each others, indicating it is a better calibration has been obtained, next section gives a more exhaustive comparison of the estimation process results.
+Only two of a total of 64 checkerboard samples are shown here: checkerboard in hand in Figure~\ref{fig:cal_hand}, and checkerboard free in the world in Figure \ref{fig:cal_free}. It is possible to appreciate that after the optimization process the checkerboards are more close each others, indicating it is a better calibration has been obtained, next section gives a more exhaustive comparison of the estimation process results.
 % it does not mean it is a good one.
 %
 
@@ -292,6 +293,7 @@ Only two of a total of 64 checkerboard samples are shown here: checkerboard in h
  \label{fig:cal_free}
 \end{figure}
 
+\noindent
 \textbf{Note}: one of the camera does not show a good result (specially in Figure \ref{fig:cal_free}), corresponded to the prosilica camera, and a probable factor of this problem will be mentioned in the next section.
 
 

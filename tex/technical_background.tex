@@ -7,16 +7,17 @@ Links to the official documentation is provided for further reading. This chapte
 
 This chapter is focused in individual explanations, and in further chapters, the relationship between these tools will be provided.
 
+\vspace*{-0.5ex}
 \section{ROS}
 \label{sec:ros}
 
 ROS provides standard \textbf{operating system} services such as hardware abstraction, low-level device control, implementation of commonly-used functionality, message-passing between processes, and package management.
 
-The primary goal of ROS is to support code reuse in robotics research and development. ROS is a \textbf{distributed framework} of processes (aka \textit{Nodes}) that enables executables to be individually designed. These processes can be grouped into \textit{\textbf{Packages}}.
+The primary goal of ROS is to support code reuse in robotics research and development. ROS is a \textbf{distributed framework} of processes (aka \textit{Nodes}) that enables executables to be individually designed. These processes can be grouped into \textbf{Packages}.
 
-The ROS runtime ``graph'' is a peer-to-peer network of processes that are loosely coupled using the ROS communication infrastructure. ROS also implements several different styles of communication.
+The ROS runtime \textit{graph} is a peer-to-peer network of processes that are loosely coupled using the ROS communication infrastructure. ROS also implements several different styles of communication.
 
-Summarizing ROS has two basic ``sides'':
+Summarizing ROS has two basic \textit{sides}:
 \begin{itemize*}
  \item The operating system side ROS as described above,
  \item and a suite of user contributed packages (organized into sets of nodes) that implement functionalities such as: simultaneous localization and mapping, planning, perception, simulation.
@@ -60,6 +61,7 @@ The PR2 (Personal Robot, version 2) is a Willow Garage which has two 7-DOF arms 
  \label{fig:pr2}
 \end{figure}
 
+\vspace*{-1ex}
 \subsection{URDF}
 \label{sec:urdf}
 
@@ -67,7 +69,7 @@ The URDF (\textbf{U}nified \textbf{R}obot \textbf{D}escription \textbf{F}ormat) 
 For more information: \url{http://www.ros.org/wiki/urdf}.
 \begin{figure}[!htbp]
  \centering
- \includegraphics[width=0.35\textwidth]{images/screenshots/PR2_urdf.png}
+ \includegraphics[width=0.4\textwidth]{images/screenshots/PR2_urdf.png}
  \caption{PR2 URDF model in RViz}
  \label{fig:pr2_urdf}
 \end{figure}
@@ -221,7 +223,7 @@ This library is mainly used for:
 
 For more information: \url{http://www.ros.org/wiki/kdl}.
 
-\section{Ceres}
+\section{Ceres Solver}
 \label{sec:ceres}
 
 Ceres Solver \cite{ceres} is a portable C++ library that allows modeling and solving large complicated \textbf{non-linear least squares} problems. It is used at Google to estimate the pose of Street View cars, aircrafts, and satellites; to build 3D models for PhotoTours; to estimate satellite image sensor characteristics, and more.
@@ -296,7 +298,7 @@ Without loss of generality, it is assumed the model plane (i.e., a checkerboard)
       1
 \end{pmatrix}
 \end{equation}
-Therefore, a model point $\mathbf{X}$ and its image $\mathbf{x}$ are related by a homography; and this can be used for solvePnP (see more details in the implementation chapter \ref{sec:solvePnP_impl}).
+Therefore, a model point $\mathbf{X}$ and its image $\mathbf{x}$ are related by a homography; and this can be used for solvePnP. % (see more details in the implementation chapter \ref{sec:solvePnP_impl}).
 
 More precisely, SolvePnP give a solution to the \textbf{PnP problem} --the estimation of the pose of a calibrated camera from $n$ 3D-to-2D point correspondences-- minimizing the reprojection error. In others words, it finds the rotation and translation from the checkerboard coordinate system to the camera coordinate system.
 

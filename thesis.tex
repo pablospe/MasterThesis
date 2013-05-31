@@ -65,6 +65,7 @@
 \usepackage{chngcntr}
 \counterwithout{figure}{chapter}
 \counterwithout{equation}{chapter}
+\counterwithout{footnote}{chapter}
 
 % \usepackage{caption}
 \usepackage{subcaption}
@@ -77,38 +78,82 @@
   {\end{itemize}\vspace*{-\itemsep}}
 
 
-
+\usepackage{xcolor}
 \usepackage{listings}
 
 % \renewcommand*{\lstlistingname}{Code}
 %
-% \lstset{ %
-%   language=Matlab,                % the language of the code
-%   basicstyle=\footnotesize,       % the size of the fonts that are used for the code
-%   numbers=left,                   % where to put the line-numbers
-%   numberstyle=\tiny\color{gray},  % the style that is used for the line-numbers
-%   stepnumber=1,                   % the step between two line-numbers. If it's 1, each line
-%                                   % will be numbered
-%   numbersep=5pt,                  % how far the line-numbers are from the code
-%   backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
-%   showspaces=false,               % show spaces adding particular underscores
-%   showstringspaces=false,         % underline spaces within strings
-%   showtabs=false,                 % show tabs within strings adding particular underscores
-%   frame=single,                   % adds a frame around the code
-%   rulecolor=\color{black},        % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens (green here))
-%   tabsize=2,                      % sets default tabsize to 2 spaces
-%   captionpos=b,                   % sets the caption-position to bottom
-%   breaklines=true,                % sets automatic line breaking
-%   breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
-%   title=\lstname,                   % show the filename of files included with \lstinputlisting;
-%                                   % also try caption instead of title
-%   keywordstyle=\bf\color{blue},          % keyword style
-%   commentstyle=\bf\color{dkgreen},       % comment style
-%   stringstyle=\color{mauve},         % string literal style
-%   escapeinside={\%*}{*)},            % if you want to add a comment within your code
-%   morekeywords={*,...}               % if you want to add more keywords to the set
-% }
+\lstset{ %
+  language=Matlab,                % the language of the code
+  basicstyle=\footnotesize,       % the size of the fonts that are used for the code
+  numbers=left,                   % where to put the line-numbers
+  numberstyle=\tiny\color{gray},  % the style that is used for the line-numbers
+  stepnumber=1,                   % the step between two line-numbers. If it's 1, each line
+                                  % will be numbered
+  numbersep=5pt,                  % how far the line-numbers are from the code
+  backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+  showspaces=false,               % show spaces adding particular underscores
+  showstringspaces=false,         % underline spaces within strings
+  showtabs=false,                 % show tabs within strings adding particular underscores
+  frame=single,                   % adds a frame around the code
+  rulecolor=\color{black},        % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens (green here))
+  tabsize=2,                      % sets default tabsize to 2 spaces
+  captionpos=b,                   % sets the caption-position to bottom
+  breaklines=true,                % sets automatic line breaking
+  breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+  title=\lstname,                   % show the filename of files included with \lstinputlisting;
+                                  % also try caption instead of title
+  keywordstyle=\bf\color{blue},          % keyword style
+  commentstyle=\bf\color{dkgreen},       % comment style
+  stringstyle=\color{mauve},         % string literal style
+  escapeinside={\%*}{*)},            % if you want to add a comment within your code
+  morekeywords={*,...}               % if you want to add more keywords to the set
+}
 
+\lstset{language=C++,
+  basicstyle=\ttfamily,
+  keywordstyle=\color{blue}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  commentstyle=\color{gray}\ttfamily,
+  morecomment=[l][\color{magenta}]{\#}
+%
+  basicstyle=\footnotesize,       % the size of the fonts that are used for the code
+  numbers=left,                   % where to put the line-numbers
+  numberstyle=\tiny\color{gray},  % the style that is used for the line-numbers
+  stepnumber=1,                   % the step between two line-numbers. If it's 1, each line
+                                  % will be numbered
+  numbersep=5pt,                  % how far the line-numbers are from the code
+  backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+  showspaces=false,               % show spaces adding particular underscores
+  showstringspaces=false,         % underline spaces within strings
+  showtabs=false,                 % show tabs within strings adding particular underscores
+  frame=single,                   % adds a frame around the code
+  rulecolor=\color{black},        % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens (green here))
+  tabsize=2,                      % sets default tabsize to 2 spaces
+  captionpos=b,                   % sets the caption-position to bottom
+  breaklines=true,                % sets automatic line breaking
+  breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+  title=\lstname,                   % show the filename of files included with \lstinputlisting;
+                                  % also try caption instead of title
+  keywordstyle=\bf\color{blue},          % keyword style
+%   commentstyle=\bf\color{green},       % comment style
+  stringstyle=\color{mauve},         % string literal style
+  escapeinside={\%*}{*)},            % if you want to add a comment within your code
+  morekeywords={*,...}               % if you want to add more keywords to the set
+}
+
+\lstset{literate=%
+   *{0}{{{\color{red!20!violet}0}}}1
+    {1}{{{\color{red!20!violet}1}}}1
+    {2}{{{\color{red!20!violet}2}}}1
+    {3}{{{\color{red!20!violet}3}}}1
+    {4}{{{\color{red!20!violet}4}}}1
+    {5}{{{\color{red!20!violet}5}}}1
+    {6}{{{\color{red!20!violet}6}}}1
+    {7}{{{\color{red!20!violet}7}}}1
+    {8}{{{\color{red!20!violet}8}}}1
+    {9}{{{\color{red!20!violet}9}}}1
+}
 
 \usepackage[font=small,labelfont=bf]{caption}
 
@@ -182,6 +227,7 @@
 \input{tex/multiview.tex}
 
 \input{tex/implementation.tex}
+\input{tex/future_work.tex}
 
 
 \appendix
