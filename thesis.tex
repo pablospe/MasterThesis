@@ -60,6 +60,9 @@
 % \newcommand{\PR2}{PR2}
 \newcommand{\ceres}{Ceres Solver}
 
+\newcommand{\x}{\mathbf{x}}
+\newcommand{\X}{\mathbf{X}}
+
 
 %%% Equation and float numbering
 \usepackage{chngcntr}
@@ -178,7 +181,7 @@
 %DEFINES TITLE PAGE, and contains abstract, acknowledgements, etc.
 
 \input{tex/header.tex}
-% \input{tex/abstract.tex}
+\input{tex/abstract.tex}
 
 
 \doublespacing
@@ -222,12 +225,14 @@
 \input{tex/introduction.tex}
 % \input{tex/background.tex}
 
-\input{tex/stereo.tex}
+% \input{tex/stereo.tex}
 \input{tex/technical_background.tex}
 \input{tex/multiview.tex}
 
 \input{tex/implementation.tex}
 \input{tex/future_work.tex}
+
+\input{tex/conclusion.tex}
 
 
 \appendix

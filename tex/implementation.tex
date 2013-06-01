@@ -1,4 +1,4 @@
-\chapter{Some implementation details}
+\chapter{Implementation details}
 \label{cha:implementation}
 
 Software engineering decisions, problems/solutions and resignations will be discussed in this chapter.
@@ -62,9 +62,13 @@ There are 2 problems with this package:
 % (optional)
 % Why Ceres?
 
+\subsection{Quaternions}
 
+One important observation is the use of quaternions. This decision was taken to avoid singularities that others rotation parametrization may have.
 
-\section{Cost function}
+\newpage
+\section{Code}
+\subsection{Cost function}
 \label{sec:ceres_impl}
 
 The Ceres Solver cost function implemented is simple, mainly because distortion is not needed to be considered, since the images are already rectified.
@@ -99,11 +103,36 @@ void calc_residuals(double observed_x, double observed_y,
 }
 \end{lstlisting}
 
-\subsection*{Quaternions}
-
-One important observation in the above cost function is the use of quaternions. This decision was taken to avoid singularities that others rotation parametrization may have.
 
 
+\subsection{N-View Triangulation}
+\label{sec:triangulation_impl}
+
+This is a generalization of the triangulation method proposed in section \ref{sec:triangulation}.
+
+\begin{lstlisting}[language=C++, label=code:triangulation, caption={Triangulation}]
+// It is the standard DLT (for multiple views)
+void nViewTriangulate(const Mat_<double> &x,
+                      const vector<Matx34d> &Ps,
+                      Vec3d &X)
+{
+  CV_Assert(x.rows == 2);
+  unsigned nviews = x.cols;
+  CV_Assert(nviews == Ps.size());
+
+  cv::Mat_<double> design = cv::Mat_<double>::zeros(2 * nviews, 4);
+  for (int i = 0; i < nviews; ++i) {
+    for (int j = 0; j < 4; ++j) {
+      design(i*2,   j) = x(0,i) * Ps[i](2, j) - Ps[i](0, j);
+      design(i*2+1, j) = x(1,i) * Ps[i](2, j) - Ps[i](1, j);
+    }
+  }
+
+  Mat X_homog;
+  cv::SVD::solveZ(design, X_homog);
+  homogeneousToEuclidean(X_homog, X);
+}
+\end{lstlisting}
 
 % \section{...}
 
@@ -134,8 +163,8 @@ One important observation in the above cost function is the use of quaternions. 
 
 \begin{figure}[!htbp]
  \centering
- \includegraphics[width=0.5\textwidth]{images/screenshots/uncalib05.png}
- \caption{Checkerboar in hand visible only for 3 cameras.}
+ \includegraphics[width=0.45\textwidth]{images/screenshots/uncalib05.png}
+ \caption{Checkerboard in hand visible only for 3 cameras.}
  \label{fig:visibility}
 \end{figure}
 
@@ -152,7 +181,7 @@ One important observation in the above cost function is the use of quaternions. 
 
 \begin{figure}[!htbp]
  \centering
- \includegraphics[width=0.7\textwidth]{images/screenshots/optimization_failer02_2.png}
+ \includegraphics[width=0.55\textwidth]{images/screenshots/optimization_failer02_2.png}
  \caption{Initial versions}
  \label{fig:optimization_failer}
 \end{figure}
@@ -163,17 +192,26 @@ One important observation in the above cost function is the use of quaternions. 
 \textbf{Problem}: Multi-view triangulation fails, see Figure \ref{fig:triangulation_fails}.
 
 \noindent
-\textbf{Solution}: no solution has been found by the moment of writing this thesis.
+\textbf{Solution}: no solution has been found by the moment of writing this thesis, the algorithm seems to be correct.
 
 \begin{figure}[!htbp]
  \centering
- \includegraphics[width=0.7\textwidth]{images/screenshots/triangulation_fails.png}
+ \includegraphics[width=0.55\textwidth]{images/screenshots/triangulation_fails.png}
  \caption{Triangulation fails, white dots}
  \label{fig:triangulation_fails}
 \end{figure}
 
+\vspace*{-2ex}
+\section{Stats}
+Just for fun, it took me 9,061 additions and 3,954 deletions in 99 commits until this point.
+\begin{figure}[!htbp]
+ \centering
+ \includegraphics[width=0.65\textwidth]{images/git_stats.png}
+ \caption{Github stats}
+ \label{fig:triangulation_fails}
+\end{figure}
 
-
+Github repository: \url{https://github.com/pablospe/calibration}.
 
 % \chapter{Extra work}
 % \label{cha:extra}
@@ -182,9 +220,3 @@ One important observation in the above cost function is the use of quaternions. 
 %
 % Work not related to the thesis, but time consuming, like commits in Ceres, fixed bugs in URDF dom (export\_urdf() function), etc...
 
-
-
-\chapter{Future work}
-\label{cha:future}
-
-ideas and all the things I didn't finish but I supposed to... :P

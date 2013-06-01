@@ -10,20 +10,7 @@ becomes less useful without a proper calibration. Examples: % where calibration 
 \end{itemize*}
 
 
-In this thesis multiple camera calibration will be addressed. The term \textit{recalibration} refers to the assumption of an initial calibration, provided by the robot model. Another important assumption is that there is one camera already calibrated with respect to the robot. This camera will be the \textit{reference camera}.
-
-\section{Goals}
-
-Part of the goals were:
-\begin{itemize*}
-  \item to create a ROS (Robot Operative System) calibration package for multiple cameras, such as RGB cameras, Microsoft Kinect, Prosilicas, and other cameras mounted in a robot; in our test case, mounted in the PR2 head.
-
- \item to estimate the best relative position between the cameras, using point measurements extracted from a know pattern (checkerboard). The relationship between the camera is suppose to remain rigid (constant over time) even though the robot or its joints move, as happens in the PR2 head.
-\end{itemize*}
-
-
-
-
+In this thesis multiple camera calibration will be addressed. The term \textit{recalibration} refers to that an initial calibration is provided from the robot model.
 
 
 \section{Thesis organization} % and methodology}
@@ -36,6 +23,12 @@ Posteriorly, implementation details (chapter~\ref{cha:implementation}), future w
 
 % Another strong division in this thesis is the use of \textbf{synthetic data} (chapter~\ref{cha:stereo_recalibration}) vs \textbf{real data} (chapter~\ref{cha:multi-view calibration}). Synthetic data has been used in stereo in order to \textbf{validate} the method (posteriorly generalized for more cameras), before endeavor a more complicated task with real data.
 
+
+
+
+\section{Goal}
+
+The thesis goal is to create a ROS calibration package for multiple cameras calibration, such as RGB cameras, Microsoft Kinect, Prosilicas, and other cameras mounted in a robot; our test case, mounted in the PR2 head.
 
 
 

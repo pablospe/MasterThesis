@@ -1,25 +1,24 @@
 \chapter{Stereo recalibration}
 \label{cha:stereo_recalibration}
 
-TODO...
+This section is a short introduction of the notation and theory used for the rest of the thesis.
 
-* It will be introduced in this chapter the notation and the theory used for the rest of the thesis
-
-* but worked in the stereo and with synthetic data.
-
-* Proposed initializations
-
-* Method selection (triangulation because it is easy to extend for multi-view, and blahblah...).
+% It will be introduced in  the notation and the theory used for the rest of the thesis
+% * but worked in the stereo and with synthetic data.
+% * Proposed initializations
+% * Method selection (triangulation because it is easy to extend for multi-view, and blahblah...).
 
 
 \section{Theoretical background}
 \label{sec:theoretical_background}
 
+This section is a short introduction of the notation and theory used for the rest of the thesis.
+
 \subsection{Pinhole camera model}
 
-A 2D point is denoted by $\mathbf{x} = [x,y]^T$. A 3D point is denoted by $\mathbf{X} = [X,Y,Z]^T$. It is used $\mathbf{\tilde{x}}$ to denote the augmented vector by adding $1$ as the last element: $\mathbf{\tilde{x}} = [x,y,1]^T$ and $\mathbf{\tilde{X}} = [X,Y,Z,1]^T$. A camera is modeled by the usual pinhole: the relationship between a 3D point $\mathbf{X}$ and its image projection $\mathbf{x}$ is given by
+A 2D point is denoted by $\x = [x,y]^T$. A 3D point is denoted by $\X = [X,Y,Z]^T$. It is used $\x = [x,y,1]^T$ to denote the point in homogeneous coordinate (augmented vector by adding~$1$ as the last element) and $\X = [X,Y,Z,1]^T$. A camera is modeled by the usual pinhole: the relationship between a 3D point $\X$ and its image projection $\x$ is given by
 \begin{equation} \label{eq:pinhole}
-  s\,\mathbf{\tilde{x}} = K\, [R ~~ t]\,\mathbf{\tilde{X}} \quad \mbox{with } K =
+  s\,\x = K\, [R ~~ t]\,\X \quad \mbox{with } K =
     \begin{pmatrix}
       f_x & 0   & c_x \\
       0   & f_y & c_y \\
@@ -64,21 +63,37 @@ Bundle adjustment optimize both the scene $X_i$ and camera parameters $P_j$ by m
 
 \subsection{Triangulation}
 \label{sec:triangulation}
-TODO...
+
+A simple linear triangulation methods is described \cite{HZ2}. Measurement $\x = P \, \X , \mathbf{\tilde{x'}} = P' \, \mathbf{\tilde{X}}$ can be combined to form a linear equation: $A\, \X = 0$. The homogeneous scale factor is eliminated by a cross product $\x = P\,\X$ to give equations that form the following equation system:
+\begin{equation}
+A =
+\begin{pmatrix}
+  x \mathbf{p}^{3T} - \mathbf{p}^{1T} \\
+  y \mathbf{p}^{3T} - \mathbf{p}^{2T} \\
+  x' \mathbf{p}^{3T} - \mathbf{p}^{1T} \\
+  y' \mathbf{p}^{3T} - \mathbf{p}^{2T}
+\end{pmatrix}
+\end{equation}
+where $\mathbf{p}^{iT}$ are the rows of P. Then the system $A\, \X = 0$ is solved with SVD\footnote{Singular Value Decomposition} as it is explained in \cite{HZ2}.
+
+
+
 
 \subsubsection{N-View Triangulation}
 \label{sec:nview_triangulation}
 
+It is easy to extend this methods for multiple views by adding more rows to the matrix $A$. Implementation in section \ref{sec:triangulation_impl}.
 
-\subsection{Camera resection}
-TODO...
-
-
-
-
-
-\section{Synthetic data}
-
-TODO...
-
-(I don't know if I will finish this :( )
+%
+% \subsection{Camera resection}
+% TODO...
+%
+%
+%
+%
+%
+% \section{Synthetic data}
+%
+% TODO...
+%
+% (I don't know if I will finish this :( )
