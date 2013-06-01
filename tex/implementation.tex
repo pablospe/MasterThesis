@@ -7,35 +7,32 @@ Software engineering decisions, problems/solutions and resignations will be disc
 
 \subsection{Why to re-implement the calibration estimation package?}
 
-Willow Garage has a calibration package already implemented for calibration:
+Willow Garage has an already implemented calibration package:
 
 \url{http://www.ros.org/wiki/calibration}
 
 \noindent
-It is more generic package, it is able to calibrate the joint angles and different types of sensors all together.
-
-
-\noindent
+It is a more generic package, it is able to calibrate joint angles and different type of sensors all together.
 My code is a github fork of this repository:
 
 \url{https://github.com/pablospe/calibration}
 
 \noindent
-Then, why re-implement it? A number of points: % was desired: % and the original package does not has:
+Then, why to re-implement it? A number of points: % was desired: % and the original package does not has:
 \begin{itemize*}
- \item Easy to reuse for new robots.
- \item More speed.
- \item Pass to C++ (mainly for Ceres), before implemented in Python.
+ \item Difficult to support new robot models.
+ \item Poor performance.
+ \item Implemented in Python. Rewrite in C++ was required in order to use Ceres Solver, KDL and URDF C++ parser.
  \item The old calibration package uses DH parameters\footnote{The Denavit-Hartenberg parameters (DH parameters) are the four parameters associated with a particular convention for attaching reference frames to the links of a spatial kinematic chain, or robot manipulator.}, which has some problems with certain robots.
 \end{itemize*}
 
-Mainly for these points the decision to start from scratch the estimation part was taken.
+Mainly for these points, the estimation was decided to be rewritten from scratch.
 
 
 
 \subsection{Why KDL?}
 
-As is mentioned above, the old package uses DH parameters and it has its own kinematic library, instead of using the well tested KDL. Not only provides forward kinematic, it is also was useful for geometrics frame transformation, and conversion between different kind of rotation matrix parametrization (mainly between quaternions and angle-axis).
+As mentioned above, the old package uses DH parameters and it has its own kinematic library, instead of using the well tested KDL. Besides forward kinematic, KDL was useful for geometric frame transformations and conversion between quaternions and angle-axis (rotation matrix parameterization).
 
 
 
@@ -43,11 +40,11 @@ As is mentioned above, the old package uses DH parameters and it has its own kin
 
 \texttt{robot\_state\_publisher} is a package in ROS which publishes the state of a robot to \texttt{/tf}. It takes the joint angles of the robot as input and publishes the 3D poses of the robot links, using a kinematic tree model of the robot (KDL tree which is obtained from the URDF description).
 
-There are 2 problems with this package:
+There are two problems with this package:
 \begin{itemize*}
- \item It does not allow to modify the URDF without constructing a new \texttt{robot\_state\_publisher} from the tree model. Note the important of this because the main goal of calibration is to update the URDF. In addition, since it is an optimization process and it must as fast as possible, it was not desired to send/receive messages during that stage.
+ \item It does not allow to modify the URDF without constructing a new \texttt{robot\_state\_publisher} from the tree model. Note the importance of this because the main goal of calibration is to update the URDF. In addition, since it is an optimization process and it must be as fast as possible, it was not desired to send/receive messages during this stage.
 
- \item Another problem is that the fixed joints (non-mobile joints) are publish half a second later (for some unknown reason), and when the URDF is updated estrange behavior can occur.
+ \item Another problem is that the fixed joints (non-mobile joints) are published half a second later (for some unknown reason), and when the URDF is updated strange behavior might occur.
 \end{itemize*}
 
 %
@@ -64,7 +61,7 @@ There are 2 problems with this package:
 
 \subsection{Quaternions}
 
-One important observation is the use of quaternions. This decision was taken to avoid singularities that others rotation parametrization may have.
+One important observation is the use of quaternions. This decision was taken to avoid singularities that others rotation parameterization may have.
 
 \newpage
 \section{Code}
@@ -116,11 +113,12 @@ void nViewTriangulate(const Mat_<double> &x,
                       const vector<Matx34d> &Ps,
                       Vec3d &X)
 {
-  CV_Assert(x.rows == 2);
   unsigned nviews = x.cols;
+
+  CV_Assert(x.rows == 2);
   CV_Assert(nviews == Ps.size());
 
-  cv::Mat_<double> design = cv::Mat_<double>::zeros(2 * nviews, 4);
+  Mat_<double> design = Mat_<double>::zeros(2 * nviews, 4);
   for (int i = 0; i < nviews; ++i) {
     for (int j = 0; j < 4; ++j) {
       design(i*2,   j) = x(0,i) * Ps[i](2, j) - Ps[i](0, j);
@@ -159,45 +157,52 @@ void nViewTriangulate(const Mat_<double> &x,
 
 \subsection{Visible cameras}
 
-\textbf{Problem}: depending of the point of view, not all the checkerboards are visible for all the cameras (see Figure \ref{fig:visibility}). Moreover, the order of the cameras in the ROS messages can change. This complicated the whole process adding unexpected complexity to really simple tasks. It could have been avoided with a little of design.
+\textbf{Problem}: depending of the point of view, not all the checkerboards are visible by all the cameras (see Figure \ref{fig:visibility}). Moreover, the order of the cameras in the ROS messages can change. This complicated the whole process adding unexpected complexity to simple tasks. It could have been avoided with a better design in the acquisition part.
 
 \begin{figure}[!htbp]
  \centering
- \includegraphics[width=0.45\textwidth]{images/screenshots/uncalib05.png}
+ \includegraphics[width=0.65\textwidth]{images/screenshots/uncalib05.png}
  \caption{Checkerboard in hand visible only for 3 cameras.}
  \label{fig:visibility}
 \end{figure}
 
 \noindent
-\textbf{Solution}: A class called \texttt{View} was created which works as a data container but in a well defined order. It has some ``mapping'' between cameras and frame names (coordinate system names).
+\textbf{Solution}: A class called \texttt{View} was created which works as a data container with a well defined camera order. It has some ``mapping'' between cameras and frame names (coordinate system names).
 
+\subsection{Visual Markers}
+
+\textbf{Problem}: if the number of checkerboard is reduced (less cameras can see the checkerboard), old markers will remain in the scene.
+
+\noindent
+\textbf{Solution}: erasing all markers and publishing periodically with a timer.
 
 \subsection{Robot update}
 
-\textbf{Problem}: once the optimization process finishes, the result is not ready to be use. The rotation and translation matrices are relative to the first camera, and cannot be use to update the robot. A example in Figure \ref{fig:optimization_failer}, which was one of the initial ``solutions''.
+\textbf{Problem}: once the optimization process finishes, the result is not ready to be use. The rotation and translation matrices are relative to the first camera, and cannot be used to update the robot. A example in Figure \ref{fig:optimization_failer}, which was one of the initial ``solutions''.
 
 \noindent
-\textbf{Solution}: explanation given in section \ref{sec:update_urdf}.
+\textbf{Solution}: an explanation of how to update the robot after the optimization process is given in section \ref{sec:update_urdf}.
 
 \begin{figure}[!htbp]
  \centering
- \includegraphics[width=0.55\textwidth]{images/screenshots/optimization_failer02_2.png}
+ \includegraphics[width=0.6\textwidth]{images/screenshots/optimization_failer02_2.png}
  \caption{Initial versions}
  \label{fig:optimization_failer}
 \end{figure}
 
 
+\newpage
 \subsection{Multi-view triangulation}
 
-\textbf{Problem}: Multi-view triangulation fails, see Figure \ref{fig:triangulation_fails}.
+\textbf{Problem}: multi-view triangulation method is not as precise as expected, see Figure \ref{fig:triangulation_fails}.
 
 \noindent
-\textbf{Solution}: no solution has been found by the moment of writing this thesis, the algorithm seems to be correct.
+\textbf{Solution}: more analysis is required to find why the re-projection error is large.
 
 \begin{figure}[!htbp]
  \centering
- \includegraphics[width=0.55\textwidth]{images/screenshots/triangulation_fails.png}
- \caption{Triangulation fails, white dots}
+ \includegraphics[width=0.6\textwidth]{images/screenshots/triangulation_fails.png}
+ \caption{Triangulation points (white dots) must be closer to solvePnP solutions (color dots)}
  \label{fig:triangulation_fails}
 \end{figure}
 
@@ -208,7 +213,7 @@ Just for fun, it took me 9,061 additions and 3,954 deletions in 99 commits until
  \centering
  \includegraphics[width=0.65\textwidth]{images/git_stats.png}
  \caption{Github stats}
- \label{fig:triangulation_fails}
+ \label{fig:git_stats}
 \end{figure}
 
 Github repository: \url{https://github.com/pablospe/calibration}.

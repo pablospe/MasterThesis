@@ -2,14 +2,14 @@
 \label{cha:multi-view calibration}
 
 \vspace*{-3ex}
-The relation between the tools previously defined is provided here, explaining the way they work together in both the acquisition and estimation process.
+The relation among the tools previously defined is provided here, explaining the way they work together in both the acquisition and estimation process.
 
-This chapter is divided in three main sections: \textbf{acquisition}, \textbf{visualization} and \textbf{estimation}. Recall that the goal is to recalibrate multiple cameras, using the PR2 as a real example, and focused in the estimation part.
+This chapter is divided in three main sections: \textbf{acquisition}, \textbf{visualization}, and \textbf{estimation}. Recall that the goal is to recalibrate multiple cameras, using the PR2 as a real example, and focused on the estimation part.
 
 \section{Overview}
 \label{sec:estimation_overview}
 
-In Figure \ref{fig:high_level_flow} a high level chart flow is presented: \textbf{1.} camera measurements are collected (checkerboard corners, as explained in section \ref{sec:acquisition}); \textbf{2.} then estimation process optimizes a non-linear function in order to find the cameras poses; \textbf{3.} the result is published to \texttt{/tf}.
+In Figure \ref{fig:high_level_flow}, a high level chart flow is presented: \textbf{1.} camera measurements are collected (checkerboard corners, as explained in section \ref{sec:acquisition}); \textbf{2.} the estimation process optimizes a non-linear function in order to find the camera poses; \textbf{3.} the result is published to \texttt{/tf}.
 
 \begin{figure}[!htbp]
  \centering
@@ -19,7 +19,7 @@ In Figure \ref{fig:high_level_flow} a high level chart flow is presented: \textb
 \end{figure}
 
 \noindent
-\textbf{Note}: point \textbf{3.} is optional. Since it was desired a visual feedback for the estimation process, it was necessary to consider this option from the beginning in the design. An alternative to \textbf{3.} is to save the result as a new and unique URDF for the particular robot it is being calibrated.
+\textbf{Note}: point \textbf{3.} is optional. Since visual feedback was desired for the estimation process, it was necessary to consider this option from the beginning in the design. An alternative to \textbf{3.} is to save the result as a new and unique URDF for the particular robot that is being calibrated.
 
 
 
@@ -34,7 +34,7 @@ The PR2 has 6 cameras in its head:
 \end{itemize*}
 
 \noindent
-The initial camera configuration is shown in Figure \ref{fig:pr2_cameras}, provided by the URDF. \textbf{Note}: this is the initialization and the information to be calibrated.
+The initial camera configuration is shown in Figure \ref{fig:pr2_cameras}, provided by the URDF. \textbf{Note}: this is the initialization and also the information to be calibrated.
 \begin{figure}[!htbp]
  \centering
  \includegraphics[width=0.55\textwidth]{images/screenshots/PR2_cameras.png}
@@ -60,14 +60,14 @@ This is the \textit{point \textbf{1.}} in the overview (Figure \ref{fig:high_lev
 
 \subsection{Data collection}
 
-In order to sufficiently constrain the non-linear optimization (see \cite{pr2_calibration_paper}), it is needed to collect a large amount of data, and manually collecting this calibration data can be tedious. Data acquisition is automated by having the PR2 hold a checkerboard in its gripper (Figure~\ref{fig:pr2_holdind_cb}), a total of 30 checkerboard poses measurements are collected for each hand. Additionally, 4 samples of a \textbf{large checkerboard} are captured far from the robot in order to help with far-field calibration (see Figure \ref{fig:data_collection01}). This data is saved in a ROS bag (section~\ref{sec:rosbag}) and later processed by the calibration package.
+In order to sufficiently constrain the non-linear optimization (see \cite{pr2_calibration_paper}), it is necessary to collect a large amount of data, and manually collecting this calibration data can be tedious. Data acquisition is automated by having the PR2 hold a checkerboard in its gripper (Figure~\ref{fig:pr2_holdind_cb}); a total of 30 checkerboard pose measurements are collected for each hand. Additionally, 4~samples of a \textbf{large checkerboard} are captured far from the robot in order to help with far-field calibration (see Figure \ref{fig:data_collection01}). This data is saved in a ROS bag (section~\ref{sec:rosbag}) and later processed by the calibration package.
 
 \noindent
 
 \textbf{Notes}:
 \begin{itemize*}
-  \item It is important to mention at this point that 2D measurements are obtained from rectified images (section \ref{sec:rectification}). Therefore, working with distortion is happily avoided in the estimation process.
-  \item It is assumed all cameras have been intrinsically calibrated in a previous stage.
+  \item It is important to mention at this point that 2D measurements are obtained from rectified images (section \ref{sec:rectification}). Therefore, working with distortion is thankfully avoided in the estimation process.
+  \item It is assumed that all cameras have been intrinsically calibrated in a previous stage.
 \end{itemize*}
 
 
@@ -105,7 +105,7 @@ This is the \textit{point \textbf{3.}} in the overview (Figure \ref{fig:high_lev
 
 Even though publishing to /tf is simple, the overall task has been time consuming and more details will be given in chapter \ref{cha:implementation}. %, where implementation details are given\footnote{Publish to /tf is mentioned here to be consistent with the overview.}.
 
-For now, let's us concentrate in 3D points visualization, more precisely RViz Markers.
+For now, let's us concentrate on 3D points visualization, more precisely RViz Markers.
 
 \subsection{Visual Markers}
 \label{sec:visual_markers}
@@ -125,13 +125,13 @@ Since checkerboards are seen from multiple views, an idea to check if the system
 \end{figure}
 
 \noindent
-\textbf{Note:} applying solvePnP to individual cameras to compute 3D points is not the best approach. However, it is used here for a quick comparison of the calibration quality. A superior method is to use the measurements of all the cameras minimizing an \textit{algebraical error} (linear), the n-view triangulation method (section \ref{sec:nview_triangulation}); and followed by a \textit{geometrical error} minimization (non-linear), the re-projection error. It is superior because it is optimal in the \textbf{maximum likelihood} sense.
+\textbf{Note:} applying solvePnP to individual cameras to compute 3D points is not the best approach. However, it is used here for a quick comparison of the calibration quality. A superior method is to use the measurements of all the cameras, minimizing an \textit{algebraical error} (linear), which is the n-view triangulation method (section \ref{sec:nview_triangulation}), followed by a \textit{geometrical error} minimization (non-linear) of the re-projection error. It is superior because it is optimal in the \textbf{maximum likelihood} sense.
 
 \section{Estimation process}
 \label{sec:estimation}
 
 This is the \textit{point \textbf{2.}} in the overview (Figure \ref{fig:high_level_flow}).
-The estimation process is in turn divided in three stages: \textbf{initialization}, actual \textbf{optimization} and \textbf{updating} URDF robot model with the results (see Figure \ref{fig:optimization}).
+The estimation process is in turn divided in three stages: \textbf{initialization}, actual \textbf{optimization}, and \textbf{updating} the URDF robot model with the results (see Figure \ref{fig:optimization}).
 
 \begin{figure}[!htbp]
  \centering
@@ -150,10 +150,10 @@ The estimation process is in turn divided in three stages: \textbf{initializatio
 
 \subsubsection*{Get cameras}
 
-An \textbf{initial configuration} of the cameras is given by the URDF, it comes from the robot design.
+An \textbf{initial configuration} of the cameras is given by the URDF, which comes from the robot design.
 
-Since PR2 head moves in the data collection, camera poses change with respect to the robot coordinate system in each calibration step, depending of the angles joints. Then, \textbf{forward kinematics} is needed calculate the poses and a KDL (section \ref{sec:KDL}) solver has been useful here.
-\textbf{Note}: even though robot moves, the relative position of the cameras does not change, a rigid relationship exists between them since they are all located in the robot head which is a whole entity.
+Since the PR2 head moves during data collection, camera poses change with respect to the robot coordinate system in each calibration step, depending on the joint angles. Then, \textbf{forward kinematics} is needed to calculate the poses and a KDL (section \ref{sec:KDL}) solver has been useful here.
+\textbf{Note}: even though the robot moves, the relative position of the cameras does not change. A rigid relationship exists between them since they are all located in the robot head, which is a rigid entity.
 
 \begin{figure}[!htbp]
  \centering
@@ -165,13 +165,13 @@ Since PR2 head moves in the data collection, camera poses change with respect to
 \noindent
 In order to understand Figure \ref{fig:initialization}, some terms are introduced below:
 \begin{itemize*}
- \item[-] \{\textbf{Robot}\}: robot coordinate system. It is the root of the URDF tree, usually called \texttt{base\_footprint} link.
+ \item[-] \{\textbf{Robot}\}: robot coordinate system. It is the root of the URDF tree, usually called the \texttt{base\_footprint} link.
 
  \item[-]  \{$\mathbf{C_i}$\}: camera coordinate system $i$. The \textit{reference camera} is $C_0$.
 
  \item[-]  \{$\mathbf{T_i}$\}: transformation from  \{$\mathbf{C_i}$\} to \{\textbf{Robot}\}.
 
- \item[-] \{$\mathbf{H_i}$\}: transformation from  \{$\mathbf{C_0}$\} to  \{$\mathbf{C_i}$\}. It is the relative position between them, from rotation and translation matrices are obtained.
+ \item[-] \{$\mathbf{H_i}$\}: transformation from  \{$\mathbf{C_0}$\} to  \{$\mathbf{C_i}$\}. This is the relative position between them, from which rotation and translation matrices are obtained.
 \end{itemize*}
 
 % \noindent
@@ -190,18 +190,18 @@ rotation $R_i$ and translation $t_i$ of the camera $i$ can be extracted from $H_
 
 \subsubsection*{Get points}
 
-Now, 3D points must be obtained from the measurements as an initialization. Two initialization are possibles:
+Now, 3D points must be obtained from the measurements as an initialization. Two initializations are possible:
 \begin{itemize*}
  \item using \textbf{solvePnP} (section \ref{sec:solvePnP}) in the reference camera, 3D points will minimize re-projection error in the first camera. This is not an optimal initialization, as it is explained in the end of section \ref{sec:visualization},
 
- \item using \textbf{n-view triangulation} (section \ref{sec:nview_triangulation}): by the moment of writing the thesis, this part is considered as ``\textit{work in progress}'', therefore results of this initialization are not provided, more details of the problems encountered are explained in the implementation chapter \ref{cha:implementation}. Note: it is a natural extension of the triangulation method, which minimizes an algebraical error. This might be a better initialization for the structure in comparison with the previous one.
+ \item using \textbf{n-view triangulation} (section \ref{sec:nview_triangulation}): by the moment of writing this thesis, this part is considered ``\textit{work in progress}''. Therefore, results of this initialization are not provided; more details of the problems encountered are explained in the implementation chapter \ref{cha:implementation}. Note: this is a natural extension of the triangulation method, which minimizes an algebraical error. This might be a better initialization for the structure, in comparison with the previous one.
 \end{itemize*}
 
 
 
 \subsubsection*{Get projection matrices}
 
-As stated in section \ref{sec:BA}, BA takes \textbf{measurements}, \textbf{3D Points} (structure) and \textbf{projection matrices}~$P_i$. The last step needed here is to multiply $[R_i ~~ t_i]$ by $K_i$ (camera intrinsic matrix), and it is assumed to have this information. Then,
+As stated in section \ref{sec:BA}, BA takes \textbf{measurements}, \textbf{3D Points} (structure) and \textbf{projection matrices}~$P_i$. The last step needed here is to multiply $[R_i ~~ t_i]$ by $K_i$ (camera intrinsic matrix); it is assumed to have this information. Then,
 \[
  P_i = K_i \, [R_i ~~ t_i]
 \]
@@ -209,13 +209,13 @@ As stated in section \ref{sec:BA}, BA takes \textbf{measurements}, \textbf{3D Po
 
 \subsection{Optimizer}
 
-A Bundle adjustment (section \ref{sec:BA}) implementation is used and details will be discussed in section \ref{sec:ceres_impl}.
+A Bundle adjustment (section \ref{sec:BA}) implementation is used; details will be discussed in section \ref{sec:ceres_impl}.
 
 
 \subsection{Update URDF}
 \label{sec:update_urdf}
 
-In the robot tree, cameras are in the leaves, an example can be seen in \ref{fig:tf02}. The relation between the cameras and their immediate father is the real parameter to optimize. It will be explained soon how to extract this information from the estimation process result. Now, more notation is introduced in Figure \ref{fig:update01}:
+In the robot tree, cameras are in the leaves: an example can be seen in \ref{fig:tf02}. The relation between the cameras and their immediate father is the real parameter to optimize. It will be explained soon how to extract this information from the estimation process result. Now, more notation is introduced in Figure \ref{fig:update01}:
 \begin{itemize*}
  \item[-]  \{$\mathbf{f_i}$\}: immediate father of camera $i$.
 
@@ -232,7 +232,7 @@ In the robot tree, cameras are in the leaves, an example can be seen in \ref{fig
  \label{fig:update01}
 \end{figure}
 
-The transformations defined in the initialization section \ref{sec:initialization} can be rewritten,
+The transformations defined in the initialization section \ref{sec:initialization} can be rewritten as
 \begin{align}
  T_i &= T_{f_i} \, T_{Rel_i} \\
  H_i &= T_{Rel_i}^{-1} \, T_{f_i}^{-1} \, T_0
@@ -256,11 +256,11 @@ A new $H'_i$ is obtained from the optimization process, and new $\mathbf{T'_{Rel
 \subsection{Results}
 \label{sec:results}
 
-In this section, a result comparison is given. First, results before and after optimization process are compared visually using solvePnP as described in section \ref{sec:visual_markers}. Second, a quantitative comparison of the optimization process output is provided.
+In this section, a result comparison is given. First, the results before and after the optimization process are compared visually using solvePnP, as described in section \ref{sec:visual_markers}. Second, a quantitative comparison of the optimization process output is provided.
 
 \subsubsection{Visual comparison}
 
-Only two of a total of 64 checkerboard samples are shown here: checkerboard in hand in Figure~\ref{fig:cal_hand}, and checkerboard free in the world in Figure \ref{fig:cal_free}. It is easy to see that after the optimization process the checkerboards are closer to each others, indicating a better calibration has been obtained. Next section gives a more exhaustive comparison of the estimation results.
+Only two of a total of 64 checkerboard samples are shown here: a checkerboard in hand in Figure~\ref{fig:cal_hand}, and a checkerboard free in the world in Figure \ref{fig:cal_free}. It is easy to see that after the optimization process the checkerboards are closer to each other, indicating that a better calibration has been obtained. The next section gives a more exhaustive comparison of the estimation results.
 % it does not mean it is a good one.
 %
 
@@ -294,12 +294,12 @@ Only two of a total of 64 checkerboard samples are shown here: checkerboard in h
 \end{figure}
 
 \noindent
-\textbf{Note}: one of the camera does not show a good result (specially in Figure \ref{fig:cal_free}), corresponding to the \texttt{prosilica} camera, and a likely factor of this problem will be mentioned in the next section.
+\textbf{Note}: one of the cameras does not show a good result (specially in Figure \ref{fig:cal_free}), corresponding to the \texttt{prosilica} camera; a likely factor of this problem will be mentioned in the next section.
 
 
 \subsubsection{Quantitative results}
 
-As mentioned above, the only finished implementation is the one which uses solvePnP to find 3D points in the first camera (reference camera), these points are used as initialization for the structure. It is not an optimal solution and arises with a bias on the reference camera (\texttt{narrow\_left\_rect}): it has an excellent re-projection error for the first camera in comparison with the rest, as is perceived in Figure \ref{fig:boxplot_stats}.
+As mentioned above, the only finished implementation is the one which uses solvePnP to find 3D points in the first camera (reference camera). These points are used as initialization for the structure. It is not an optimal solution and exhibits a bias on the reference camera (\texttt{narrow\_left\_rect}): this camera has an excellent re-projection error for the first camera in comparison with the rest, as can be seen in Figure \ref{fig:boxplot_stats}.
 % \begin{figure}[!htbp]
 %  \centering
 %  \includegraphics[width=0.35\textwidth]{images/boxplot_stats.pdf}
@@ -323,12 +323,12 @@ As mentioned above, the only finished implementation is the one which uses solve
 %  \label{fig:boxplot_stats}
 \end{figure}
 
-In addition, it is possible to observe that \texttt{prosilica} camera has a larger error than the remaining cameras. The reason could be a wrong intrinsic calibration. In order to determine if the bias was produced for this camera, same comparison has been repeated without taking into account the \texttt{prosilica} camera in the estimation process (Figure \ref{fig:boxplot_stats_without_prosilica}). Even though the global re-projection improves in this case, the bias continues on the first camera.
+In addition, it is possible to observe that the \texttt{prosilica} camera has a larger error than the remaining cameras. The reason could be a wrong intrinsic calibration. In order to determine if the bias was produced for this camera, the same comparison has been repeated without taking into account the \texttt{prosilica} camera in the estimation process (Figure \ref{fig:boxplot_stats_without_prosilica}). Even though the global re-projection improves in this case, the bias continues on the first camera.
 
 
 
 
-A visible comparison of the bias can been noted in Figure \ref{fig:reprojection}, where reprojected points after optimization are plot for two cameras: \texttt{wide\_left\_rect} and \texttt{narrow\_left\_rect} camera.
+A visible comparison of the bias can been noted in Figure \ref{fig:reprojection}, where reprojected points after optimization are plotted for two cameras: the \texttt{wide\_left\_rect} and the \texttt{narrow\_left\_rect} camera.
 \begin{figure}[!htbp]
   \centering
     \subfigure[\texttt{wide\_left\_rect} camera]
@@ -356,6 +356,6 @@ More statistics (median, mean and standard deviation) can be observed in Figure 
 \end{figure}
 
 
-Speed was not a priority goal of this project, but worth to mention that Ceres Solver takes few seconds to compute the result and less than 50 iterations to converge.
+Speed was not a priority of this project, but it is worth it to mention that the Ceres Solver takes only a few seconds to compute the result and less than 50 iterations to converge.
 
 

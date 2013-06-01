@@ -1,7 +1,7 @@
 \chapter{Background}
 \label{cha:background}
 
-The background will be divided in two sections: a \textbf{theoretical background} discussed in section~\ref{sec:theoretical_background}, and a \textbf{technical background} in section~\ref{cha:technical_background}
+The background will be divided in two sections: a \textbf{theoretical background} discussed in section~\ref{sec:theoretical_background}, and a \textbf{technical background} in section~\ref{cha:technical_background}.
 
 \section{Theoretical background}
 \label{sec:theoretical_background}
@@ -10,7 +10,7 @@ The background will be divided in two sections: a \textbf{theoretical background
 
 \subsection{Pinhole camera model}
 
-A 2D point is denoted by $\x = [x,y]^T$. A 3D point is denoted by $\X = [X,Y,Z]^T$. It is used $\x = [x,y,1]^T$ to denote the point in homogeneous coordinate (augmented vector by adding~$1$ as the last element) and $\X = [X,Y,Z,1]^T$. A camera is modeled by the usual pinhole: the relationship between a 3D point $\X$ and its image projection $\x$ is given by
+A 2D point is denoted by $\x = [x,y]^T$. A 3D point is denoted by $\X = [X,Y,Z]^T$. It is used $\x = [x,y,1]^T$ to denote the point in homogeneous coordinates (augmented vector by adding~$1$ as the last element) and $\X = [X,Y,Z,1]^T$. A camera is modeled by the usual pinhole: the relation between a 3D point $\X$ and its image projection $\x$ is given by
 \begin{equation} \label{eq:pinhole}
   s\,\x = K\, [R ~~ t]\,\X \quad \mbox{with } K =
     \begin{pmatrix}
@@ -29,7 +29,7 @@ where $s$ is an arbitrary scale factor; $(R,t)$ called the extrinsic parameters,
 \subsection{Bundle adjustment}
 \label{sec:BA}
 
-Needing to estimate relative poses of several cameras or many poses of a single moving camera is a common problem. It is often solved by jointly estimating the set of camera poses along with 3D features that are detected by some set of cameras. This approach is called bundle adjustment (BA) \cite{BA}.
+Estimation of relative poses of several cameras, or many poses of a single moving camera, is a common problem. It is often solved by jointly estimating the set of camera poses along with 3D features that are detected by some set of cameras. This approach is called bundle adjustment (BA) \cite{BA}.
 
 Bundle adjustment algorithms take the following three data as inputs (see Figure~\ref{fig:BA}):
 \begin{itemize*}
@@ -46,19 +46,19 @@ Bundle adjustment algorithms take the following three data as inputs (see Figure
 \end{figure}
 
 \noindent
-Bundle adjustment optimize both the scene $X_i$ and camera parameters $P_j$ by minimizing the sum of squared re-projection errors:
-\[
- \sum _{i=1}^{n}\sum _{j\in V_{i}}\left( x_{ij}-P_{i}X_{j}\right)^2
-\]
+Bundle adjustment optimizes both the scene $X_i$ and camera parameters $P_j$ by minimizing the sum of squared re-projection errors:
+\begin{equation}
+ \sum _{i=1}^{n}\sum _{j\in V_{i}} ||x_{ij}-P_{i}X_{j}||^2
+\end{equation}
 
 \noindent
-\textbf{Note:} Ceres Solver has been utilized to solve this optimization problem, see section \ref{sec:ceres} for a short introduction to Ceres and section \ref{sec:ceres_impl} to see the cost function used in the later defined estimation process.
+\textbf{Note:} Ceres Solver has been utilized to solve this optimization problem, see section \ref{sec:ceres} for a short introduction; and the cost function used in the estimation process is detailed in section \ref{sec:ceres_impl}.
 
 
 \subsection{Triangulation}
 \label{sec:triangulation}
 
-A simple linear triangulation methods is described \cite{HZ2}. Measurement $\x = P \, \X , \mathbf{\tilde{x'}} = P' \, \mathbf{\tilde{X}}$ can be combined to form a linear equation: $A\, \X = 0$. The homogeneous scale factor is eliminated by a cross product $\x = P\,\X$ to give equations that form the following equation system:
+A simple linear triangulation method is described \cite{HZ2}. Measurement $\x = P \, \X , \mathbf{x'} = P' \, \mathbf{X}$ can be combined to form a linear equation: $A\, \X = 0$. The homogeneous scale factor is eliminated by a cross product $\x \times P\,\X = 0$ to give equations that form the following equation system:
 \begin{equation}
 A =
 \begin{pmatrix}
@@ -68,7 +68,7 @@ A =
   y' \mathbf{p}^{3T} - \mathbf{p}^{2T}
 \end{pmatrix}
 \end{equation}
-where $\mathbf{p}^{iT}$ are the rows of P. Then the system $A\, \X = 0$ is solved with SVD\footnote{Singular Value Decomposition} as it is explained in \cite{HZ2}.
+where $\mathbf{p}^{iT}$ are the rows of P. Then the system $A\, \X = 0$ is solved with SVD\footnote{SVD: Singular Value Decomposition} as it is explained in \cite{HZ2}.
 
 
 
@@ -76,7 +76,7 @@ where $\mathbf{p}^{iT}$ are the rows of P. Then the system $A\, \X = 0$ is solve
 \subsubsection{N-View Triangulation}
 \label{sec:nview_triangulation}
 
-It is easy to extend this methods for multiple views by adding more rows to the matrix $A$. Implementation in section \ref{sec:triangulation_impl}.
+It is easy to extend this method for multiple views by adding more rows to the matrix $A$. Implementation in section \ref{sec:triangulation_impl}.
 
 
 
@@ -87,7 +87,7 @@ It is easy to extend this methods for multiple views by adding more rows to the 
 
 In this section, a briefly explanation of the used tools is given: ROS (Robot Operating System)~\cite{ROS}, RViz (ROS visualizer) \cite{RViz}, KDL (Kinematics and Dynamics Library) \cite{KDL}, Ceres Solver (non-linear least squares minimizer) \cite{ceres} and others.
 
-Links to the official documentation is provided for further reading. This chapter does not intend to be a full documentation of each component, since their developments is very dynamic.
+References to the official documentation is provided for further reading. This chapter does not intend to be a full documentation of each component, since their development is very dynamic.
 
 This chapter is focused in individual explanations, and in further chapters, the relationship between these tools will be provided.
 
@@ -101,13 +101,13 @@ The primary goal of ROS is to support code reuse in robotics research and develo
 
 The ROS runtime \textit{graph} is a peer-to-peer network of processes that are loosely coupled using the ROS communication infrastructure. ROS also implements several different styles of communication.
 
-Summarizing ROS has two basic \textit{sides}:
+In summary, ROS has two basic \textit{sides}:
 \begin{itemize*}
  \item The operating system side ROS as described above,
- \item and a suite of user contributed packages (organized into sets of nodes) that implement functionalities such as: simultaneous localization and mapping, planning, perception, simulation.
+ \item and a suite of user contributed packages (organized into set of nodes) that implement functionalities such as: simultaneous localization and mapping, planning, perception, simulation.
 \end{itemize*}
 
-The main goal of this thesis is to be a \textbf{ROS calibration package}, in replacement of the old one \cite{pr2_calibration}. For further learning about ROS, an excellent documentation can be found in: \url{www.ros.org}.
+The main goal of this thesis is to be a \textbf{ROS calibration package}, in replacement of the existent one \cite{pr2_calibration}. For further learning about ROS, an excellent documentation can be found in: \url{www.ros.org}.
 
 \subsubsection{Nodes and Topics}
 \label{sec:nodes}
@@ -137,7 +137,7 @@ Another primary ROS goal is \textit{``language independence''}: the ROS framewor
 \subsubsection{PR2}
 \label{sec:PR2}
 
-The PR2 (Personal Robot, version 2) is a Willow Garage which has two 7-DOF arms with a payload of 1.8 kilograms (1,800 g). Sensors include a 5 megapixel camera, a tilting laser range finder, and an inertial measurement unit. The ``texture projector'' projects a pattern on the environment to create 3D information for capture by the cameras. Also Microsoft Kinect can be head-mounted. In this work, its head (see left on Figure \ref{fig:pr2}) is the most important since all the cameras are located there and most be calibration to each other.
+The PR2 (Personal Robot, version 2) is a Willow Garage which has two 7-DOF arms with a payload of 1.8 kilograms (1,800 g). Sensors include a 5 megapixel camera, a tilting laser range finder, and an inertial measurement unit. The ``texture projector'' projects a pattern on the environment to create 3D information by the cameras. Also Microsoft Kinect can be head-mounted. In this work, its head (see left on Figure \ref{fig:pr2}) is the must important since all the cameras are located there and must be calibrated to each other.
 \begin{figure}[!htbp]
  \centering
  \includegraphics[width=0.45\textwidth]{images/PR2_01.jpg}\includegraphics[width=0.45\textwidth]{images/PR2_joint.jpg}
@@ -149,7 +149,7 @@ The PR2 (Personal Robot, version 2) is a Willow Garage which has two 7-DOF arms 
 \subsubsection{URDF}
 \label{sec:urdf}
 
-The URDF (\textbf{U}nified \textbf{R}obot \textbf{D}escription \textbf{F}ormat) is an XML format for representing a robot model. The package also contains a C++ parser, and it can be visualize with RViz (see in Figure~\ref{fig:pr2_urdf}).
+The URDF (\textbf{U}nified \textbf{R}obot \textbf{D}escription \textbf{F}ormat) is a XML format for robot model representation. The package also contains a C++ parser, and it can be visualized with RViz (see Figure~\ref{fig:pr2_urdf}).
 For more information: \url{http://www.ros.org/wiki/urdf}.
 \begin{figure}[!htbp]
  \centering
@@ -162,7 +162,7 @@ For more information: \url{http://www.ros.org/wiki/urdf}.
 \subsubsection{/tf}
 \label{sec:tf}
 
-The package /tf lets the user keep track of multiple coordinate frames over time. /tf maintains the relationship between coordinate frames in a tree structure buffered in time, and lets the user transform points, vectors, etc between any two coordinate frames at any desired point in time.
+The package /tf lets the user keep track of multiple coordinate frames over time. /tf maintains the relationship between coordinate frames in a tree structure buffered in time, and lets the user transform points, vectors, other geometric entities between any two coordinate frames at any desired point in time.
 
 A robotic system typically has many 3D coordinate frames that change over time (see Figure~\ref{fig:tf}), such as a world frame, base frame, gripper frame, head frame, etc. /tf keeps track of all these frames over time.
 For more information: \url{http://www.ros.org/wiki/tf}.
@@ -179,7 +179,7 @@ For more information: \url{http://www.ros.org/wiki/tf}.
     \centering\includegraphics[height=0.3\textheight]{images/screenshots/tf02.png}
     \label{fig:tf02}
   }
-  \caption{Example of /tf in RViz (in a particular time). On the left, all coordinates system; on the right, /tf path from \texttt{narrow\_stereo\_optical\_frame} until the robot root (\texttt{base\_footprint}).}
+  \caption{Example of /tf in RViz (in a particular time). On the left, all coordinate systems; on the right, /tf path from \texttt{narrow\_stereo\_optical\_frame} until the robot root (\texttt{base\_footprint}).}
    \label{fig:tf}
 \end{figure}
 
@@ -187,7 +187,7 @@ For more information: \url{http://www.ros.org/wiki/tf}.
 \subsubsection{ROS bag and rqt}
 \label{sec:rosbag}
 
-All the components for a simulated environment are implemented, and it is needed a way to reproduce events/messages. This is performed by ROS bag, which is a set of tools for recording from and playing back to ROS topics. It avoids deserialization and reserialization of the messages. More info: \url{http://www.ros.org/wiki/rosbag}.
+All the components for a simulated environment are implemented and, it is needed, a way to replay events/messages. This is performed by ROS bag, which is a set of tools for recording from and playing back to ROS topics. It avoids deserialization and reserialization of the messages. More info: \url{http://www.ros.org/wiki/rosbag}.
 
 \begin{figure}[!htbp]
  \centering
@@ -207,7 +207,7 @@ A second tool described here is a rqt plugin which allows to play a ROS bag easi
 
 \subsubsection{Image\_proc\_node}
 
-The node \texttt{image\_proc} sit between the camera driver and vision processing nodes (see Figure~\ref{fig:img_proc02}). \texttt{image\_proc} removes camera distortion from the raw image stream, and if necessary will convert Bayer or YUV422 format image data to color
+The node \texttt{image\_proc} sits between the camera driver and vision processing nodes (see Figure~\ref{fig:img_proc02}). \texttt{image\_proc} removes camera distortion from the raw image stream, and if necessary will convert Bayer or YUV422 format image data to color
 
 \begin{figure}[!htbp]
  \centering
@@ -237,8 +237,7 @@ The camera model used in ROS is the same coordinate system used in OpenCV. It di
 
 More info: \url{http://www.ros.org/wiki/image_pipeline/CameraInfo}.
 
-\noindent
-\textbf{Derivation diagram}
+\subsubsection{Derivation diagram}
 
 Figure \ref{fig:camera_model03} is a diagram of the various images that are conceptually derivable from the CameraInfo message\footnote{CameraInfo message is a ROS message where all the camera information is saved.}. The boxed variables are present in this message.
 
@@ -249,8 +248,7 @@ Figure \ref{fig:camera_model03} is a diagram of the various images that are conc
  \label{fig:camera_model03}
 \end{figure}
 
-\noindent
-\textbf{Projection onto the original image}
+\subsubsection{Projection onto the original image}
 
 Starting with an initial 3D point $X$, the position of the corresponding image point is found by going right-to-left in the upper half of the diagram \ref{fig:camera_model03}. The process is summarized by the following equations:
 \[
@@ -264,13 +262,11 @@ q  &=& Kx*       & \quad \quad \texttt{pixel coordinates}
 This process uses the $K$ camera matrix and $D$ distortion vector. Ignoring the transform $T$, the projection of a point $X$' can be found into the original camera frame using these equations. First, the $3D$ point $X$' is projected onto the normalized, undistorted image via a projection operation (division by $Z$). Then the distortion coefficients are used in the function $d()$ to move the point to its distorted position, still in a normalized image. Finally, the normalized image is converted to a pixel-coordinate image by applying the camera matrix to each image point.
 
 
-\noindent
-\textbf{Rectification}
+\subsubsection{Rectification}
 \label{sec:rectification}
+
 In this context, rectification is the process of transforming the input image into an output image with the distortion corrected (Figure \ref{fig:camera_model03}), and optionally transformed by rotation, in-plane translation, and scale.
 
-In the case of a \textbf{monocular rectification} with distortion correction, to transform a pixel in the input image into one in the output image, it is sent through the $K - D - R - K'$ series of transformations. $K - D$ gets to the normalized, undistorted image; the rotation $R$ is the identity because we don't want to rotate the image; and then $K'$ converts back to pixel coordinates in the output image. In this case, since there is no rotation, translation, or scaling from the original image, $K = K'$ , and only the $K$ and $D$ elements of CameraInfo are needed.
-An example of this process can be seen in Figure \ref{fig:rectification}.
 \begin{figure}[!htbp]
 \centering
   \subfigure[\textbf{image\_raw}: original camera image, Bayered and distorted]
@@ -286,6 +282,9 @@ An example of this process can be seen in Figure \ref{fig:rectification}.
   \caption{Rectification (and de-Bayer) process performed by \texttt{\texttt{image\_proc}\_node}.}
    \label{fig:rectification}
 \end{figure}
+In the case of a \textbf{monocular rectification} with distortion correction, to transform a pixel in the input image into one in the output image, it is sent through the $K - D - R - K'$ series of transformations. $K - D$ gets to the normalized, undistorted image; the rotation $R$ is the identity because we don't want to rotate the image; and then $K'$ converts back to pixel coordinates in the output image (an example in Figure \ref{fig:rectification}). In this case, since there is no rotation, translation, or scaling from the original image, $K = K'$ , and only the $K$ and $D$ elements of CameraInfo are needed.
+% An example of this process can be seen.
+
 
 
 
@@ -296,7 +295,7 @@ KDL (\textbf{K}inematics and \textbf{D}ynamics \textbf{L}ibrary) defines a tree 
 
 \begin{figure}[!htbp]
  \centering
- \includegraphics[width=0.7\textwidth]{images/KDL02.png}
+ \includegraphics[width=0.75\textwidth]{images/KDL02.png}
  \caption{Example of KDL tree.}
  \label{fig:KDL}
 \end{figure}
