@@ -125,7 +125,7 @@ Since checkerboards are seen from multiple views, an idea to check if the system
 \end{figure}
 
 \noindent
-\textbf{Note:} applying solvePnP to individual cameras to compute 3D points is not the best approach. However, it is used here for a quick comparison of the calibration quality. A superior method is to use the measurements of all the cameras, minimizing an \textit{algebraical error} (linear), which is the n-view triangulation method (section \ref{sec:nview_triangulation}), followed by a \textit{geometrical error} minimization (non-linear) of the re-projection error. It is superior because it is optimal in the \textbf{maximum likelihood} sense.
+\textbf{Note:} applying solvePnP to individual cameras to compute 3D points is not the best approach. However, it is used here for a quick comparison of the calibration quality. A superior method is to use the measurements of all the cameras, minimizing an \textit{algebraic error} (linear), which is the n-view triangulation method (section \ref{sec:nview_triangulation}), followed by a \textit{geometrical error} minimization (non-linear) of the reprojection error. It is superior because it is optimal in the \textbf{maximum likelihood} sense.
 
 \section{Estimation process}
 \label{sec:estimation}
@@ -192,9 +192,9 @@ rotation $R_i$ and translation $t_i$ of the camera $i$ can be extracted from $H_
 
 Now, 3D points must be obtained from the measurements as an initialization. Two initializations are possible:
 \begin{itemize*}
- \item using \textbf{solvePnP} (section \ref{sec:solvePnP}) in the reference camera, 3D points will minimize re-projection error in the first camera. This is not an optimal initialization, as it is explained in the end of section \ref{sec:visualization},
+ \item using \textbf{solvePnP} (section \ref{sec:solvePnP}) in the reference camera, 3D points will minimize reprojection error in the first camera. This is not an optimal initialization, as it is explained in the end of section \ref{sec:visualization},
 
- \item using \textbf{n-view triangulation} (section \ref{sec:nview_triangulation}): by the moment of writing this thesis, this part is considered ``\textit{work in progress}''. Therefore, results of this initialization are not provided; more details of the problems encountered are explained in the implementation chapter \ref{cha:implementation}. Note: this is a natural extension of the triangulation method, which minimizes an algebraical error. This might be a better initialization for the structure, in comparison with the previous one.
+ \item using \textbf{n-view triangulation} (section \ref{sec:nview_triangulation}): by the moment of writing this thesis, this part is considered ``\textit{work in progress}''. Therefore, results of this initialization are not provided; more details of the problems encountered are explained in the implementation chapter \ref{cha:implementation}. Note: this is a natural extension of the triangulation method, which minimizes an algebraic error. This might be a better initialization for the structure, in comparison with the previous one.
 \end{itemize*}
 
 
@@ -299,7 +299,7 @@ Only two of a total of 64 checkerboard samples are shown here: a checkerboard in
 
 \subsubsection{Quantitative results}
 
-As mentioned above, the only finished implementation is the one which uses solvePnP to find 3D points in the first camera (reference camera). These points are used as initialization for the structure. It is not an optimal solution and exhibits a bias on the reference camera (\texttt{narrow\_left\_rect}): this camera has an excellent re-projection error for the first camera in comparison with the rest, as can be seen in Figure \ref{fig:boxplot_stats}.
+As mentioned above, the only finished implementation is the one which uses solvePnP to find 3D points in the first camera (reference camera). These points are used as initialization for the structure. It is not an optimal solution and exhibits a bias on the reference camera (\texttt{narrow\_left\_rect}): this camera has an excellent reprojection error for the first camera in comparison with the rest, as can be seen in Figure \ref{fig:boxplot_stats}.
 % \begin{figure}[!htbp]
 %  \centering
 %  \includegraphics[width=0.35\textwidth]{images/boxplot_stats.pdf}
@@ -323,7 +323,7 @@ As mentioned above, the only finished implementation is the one which uses solve
 %  \label{fig:boxplot_stats}
 \end{figure}
 
-In addition, it is possible to observe that the \texttt{prosilica} camera has a larger error than the remaining cameras. The reason could be a wrong intrinsic calibration. In order to determine if the bias was produced for this camera, the same comparison has been repeated without taking into account the \texttt{prosilica} camera in the estimation process (Figure \ref{fig:boxplot_stats_without_prosilica}). Even though the global re-projection improves in this case, the bias continues on the first camera.
+In addition, it is possible to observe that the \texttt{prosilica} camera has a larger error than the remaining cameras. The reason could be a wrong intrinsic calibration. In order to determine if the bias was produced for this camera, the same comparison has been repeated without taking into account the \texttt{prosilica} camera in the estimation process (Figure \ref{fig:boxplot_stats_without_prosilica}). Even though the global reprojection improves in this case, the bias continues on the first camera.
 
 
 
@@ -341,7 +341,7 @@ A visible comparison of the bias can been noted in Figure \ref{fig:reprojection}
     \includegraphics[width=0.45\textwidth]{images/reprojection01.pdf}
     \label{reprojection01}
   }
-  \caption{Re-projection error after optimization.}
+  \caption{Reprojection error after optimization.}
   \label{fig:reprojection}
 \end{figure}
 
