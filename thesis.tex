@@ -63,6 +63,9 @@
 \newcommand{\x}{\mathbf{x}}
 \newcommand{\X}{\mathbf{X}}
 
+\newcommand{\tx}{[t]_{\times}}
+
+
 
 %%% Equation and float numbering
 \usepackage{chngcntr}
@@ -166,6 +169,9 @@
 
 \usepackage{amsmath}
 
+\usepackage{amsthm}
+\newtheorem{theorem}{Theorem}
+
 
 \begin{document}
 \newpage
@@ -193,7 +199,7 @@
 
 \tableofcontents
 
-% \listoffigures
+\listoffigures
 % \listoftables
 
 
@@ -230,14 +236,14 @@
 \input{tex/multiview.tex}
 
 \input{tex/implementation.tex}
-% \input{tex/additional.tex}
+\input{tex/additional.tex}
 \input{tex/future_work.tex}
 
 \input{tex/conclusion.tex}
 
 
-% \appendix
-% \input{tex/appendix.tex}
+\appendix
+\input{tex/appendix.tex}
 
 
 

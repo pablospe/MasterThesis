@@ -1,6 +1,7 @@
 \chapter{Introduction}
 \label{cha:intro}
 
+\vspace*{-2ex}
 In robotics, sensor calibration is extremely important since a robot needs its sensors to measure and interact with the environment.
 % becomes less useful without~it.
 % a proper calibration.
@@ -15,14 +16,14 @@ Examples where calibration is necessary are:
 In this thesis calibration of multiple cameras will be studied. The term \textit{recalibration} refers to the existence of an initial calibration, provided by the robot model description (the URDF). Another important assumption is that one camera is already calibrated with respect to the robot. This camera will be the \textit{reference camera}.
 
 
-\vspace*{-1ex}
+\vspace*{-2ex}
 \section{Thesis organization} % and methodology}
 
 The background is presented in chapter \ref{cha:background}, and it is divided in two main sections: first, a \textit{theoretical background} will be explained in section~\ref{sec:theoretical_background}; second, a \textit{technical background} in section~\ref{cha:technical_background}, where ROS (Robot Operative System) \cite{ROS}, RViz (ROS visualizer) \cite{RViz}, PR2 (Personal Robot 2, from Willow Garage) \cite{PR2}, KDL (Kinematics and Dynamics Library) \cite{KDL}, Ceres Solver (non-linear least squares minimizer) \cite{ceres}, and other infinity amount of tools will be briefly explained.
 
 Chapter~\ref{cha:multi-view calibration} explains the process and methods developed in this thesis. \textbf{Real data} obtained from PR2 is used to calibrate the \textit{multiple cameras}; experimental results are also presented.
 
-\textit{Implementation details} will be discussed in chapter~\ref{cha:implementation}, followed by \textit{future work} in chapter~\ref{cha:future}, and \textit{conclusions} in chapter~\ref{cha:conclusions}.
+\textit{Implementation details} will be discussed in chapter~\ref{cha:implementation}. Motion initialization is analyzed in chapter~\ref{cha:additional}, where a novel method is presented and directions for further research are provided. Followed by \textit{future work} in chapter~\ref{cha:future}, and \textit{conclusions} in chapter~\ref{cha:conclusions}.
 
 % Another strong division in this thesis is the use of \textit{synthetic data} (chapter~\ref{cha:stereo_recalibration}) vs \textit{real data} (chapter~\ref{cha:multi-view calibration}). Synthetic data has been used in stereo in order to \textit{validate} the method (posteriorly generalized for more cameras), before endeavor a more complicated task with real data.
 
