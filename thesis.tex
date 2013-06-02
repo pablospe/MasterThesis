@@ -13,7 +13,17 @@
 %does the headers on the pages - keep in
 \usepackage{fancyhdr}
 
+
+%%% Equation and float numbering
+\usepackage{chngcntr}
+\counterwithout{figure}{chapter}
+\counterwithout{equation}{chapter}
+\counterwithout{footnote}{chapter}
+
 \usepackage{subfigure}
+% \usepackage{caption}
+\usepackage{subcaption}
+
 
 % \usepackage[pdftex]{graphicx}  % Enable pdflatex
 % \usepackage{movie15}           % for .gif
@@ -67,14 +77,6 @@
 
 
 
-%%% Equation and float numbering
-\usepackage{chngcntr}
-\counterwithout{figure}{chapter}
-\counterwithout{equation}{chapter}
-\counterwithout{footnote}{chapter}
-
-% \usepackage{caption}
-\usepackage{subcaption}
 
 \newenvironment{itemize*}%
   {\begin{itemize}%
@@ -162,6 +164,8 @@
 }
 
 \usepackage[font=small,labelfont=bf]{caption}
+% \usepackage{caption}
+% \captionsetup{figurewithin=none}
 
 \makeatletter
 \setlength{\@fptop}{0pt}

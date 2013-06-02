@@ -209,13 +209,13 @@ As stated in section \ref{sec:BA}, BA takes \textbf{measurements}, \textbf{3D Po
 
 \subsection{Optimizer}
 
-A Bundle adjustment (section \ref{sec:BA}) implementation is used; details will be discussed in section \ref{sec:ceres_impl}.
+A Bundle adjustment (section \ref{sec:BA}) implementation is used; details will be discussed in section~\ref{sec:ceres_impl}.
 
 
 \subsection{Update URDF}
 \label{sec:update_urdf}
 
-In the robot tree, cameras are in the leaves: an example can be seen in \ref{fig:tf02}. The relation between the cameras and their immediate father is the real parameter to optimize. It will be explained soon how to extract this information from the estimation process result. Now, more notation is introduced in Figure \ref{fig:update01}:
+In the robot tree, cameras are in the leaves: an example can be seen in Figure \ref{fig:tf02}. The relation between the cameras and their immediate father is the real parameter to optimize. It will be explained soon how to extract this information from the estimation process result. Now, more notation is introduced in Figure \ref{fig:update01}:
 \begin{itemize*}
  \item[-]  \{$\mathbf{f_i}$\}: immediate father of camera $i$.
 
