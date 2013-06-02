@@ -52,7 +52,7 @@ Bundle adjustment optimizes both the scene $X_i$ and camera parameters $P_j$ by 
 \end{equation}
 
 \noindent
-\textbf{Note:} Ceres Solver has been utilized to solve this optimization problem, see section \ref{sec:ceres} for a short introduction; and the cost function used in the estimation process is detailed in section \ref{sec:ceres_impl}.
+\textbf{Note:} Ceres Solver has been utilized to solve this optimization problem, see section \ref{sec:ceres} for a short introduction; and the cost function used in the estimation process is detailed in section~\ref{sec:ceres_impl}.
 
 
 \subsection{Triangulation}
@@ -89,7 +89,7 @@ In this section, a briefly explanation of the used tools is given: ROS (Robot Op
 
 References to the official documentation is provided for further reading. This chapter does not intend to be a full documentation of each component, since their development is very dynamic.
 
-This chapter is focused in individual explanations, and in further chapters, the relationship between these tools will be provided.
+This chapter is focused in individual explanations, and in further chapters, the relation between these tools will be provided.
 
 \vspace*{-0.5ex}
 \subsection{ROS}
@@ -349,7 +349,7 @@ OpenCV is integrated in ROS and used in many parts of this thesis, in special th
 
 \subsubsection{Rodrigues' formula}
 
-Converts a rotation matrix to a rotation vector\footnote{This is an axis-angle representation, an using the vector module as the angle that describe the magnitude of the rotation about the axis.} and vice versa. A rotation vector is a convenient and most compact representation of a rotation matrix (since any rotation matrix has just 3 degrees of freedom).
+Converts a rotation matrix to a rotation vector\footnote{This is an axis-angle representation, the vector module is used as the angle to describe the rotation magnitude about the axis.} and vice versa. A rotation vector is a convenient and most compact representation of a rotation matrix (since any rotation matrix has just 3 degrees of freedom).
 
 \begin{figure}[!htbp]
  \centering
@@ -386,7 +386,7 @@ Without loss of generality, it is assumed the model plane (i.e., a checkerboard)
 \end{equation}
 Therefore, a model point $\mathbf{X}$ and its image $\mathbf{x}$ are related by a homography; and this can be used for solvePnP. % (see more details in the implementation chapter \ref{sec:solvePnP_impl}).
 
-More precisely, SolvePnP give a solution to the \textbf{PnP problem} --the estimation of the pose of a calibrated camera from $n$ 3D-to-2D point correspondences-- minimizing the reprojection error. In others words, it finds the rotation and translation from the checkerboard coordinate system to the camera coordinate system.
+More precisely, SolvePnP gives a solution to the \textbf{PnP problem} --the estimation of the pose of a calibrated camera from $n$ 3D-to-2D point correspondences-- minimizing the reprojection error. In others words, it finds the rotation and translation from the checkerboard coordinate system to the camera coordinate system.
 
 % More info: \url{http://docs.opencv.org/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html#solvepnp}
 

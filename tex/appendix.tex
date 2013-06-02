@@ -1,9 +1,137 @@
-\chapter{Theorem demonstrations}
+\chapter{Lemma demonstrations}
 \label{ap:proof}
 
+This Appendix has auxiliary lemmas used in the theorem (\ref{th:norm}) proof. Knowledge of linear algebra will be assumed.
 
-\begin{theorem}
-\label{th:singular_values}
-\end{theorem}
+% \cite{Strang:1993}
 
+\begin{lemma}
+\label{lemma:symmetric}
+\[ \left.
+  \begin{array}{l}
+  A = Q\,\Lambda\,Q^T \\
+  \Lambda \mbox{ diagonal matrix} \\
+  Q \mbox{ symmetric matrix}
+  \end{array} \right\}
+  \Rightarrow
+  A \mbox{ and } \Lambda \mbox{ have same eigenvalues.}
+\]
+\end{lemma}
+
+\begin{proof} See \cite{Strang:1993} for a demonstration.
+\end{proof}
+
+
+\begin{lemma}
+\label{lemma:singular_values}
+\[ \left.
+  \begin{array}{l}
+  E =[t]_{\times}R \\
+  ||t||=k
+  \end{array} \right\}
+  \Rightarrow
+  E \mbox{ has two singular values equal to $k$ and the last one is zero.}
+\]
+\end{lemma}
+
+\begin{proof}
+From \cite[Result A4.1 (ii)]{HZ2},
+\begin{align*}
+S=[t]_{\times} \mbox{ is skew-symmetric } & \quad\Rightarrow\quad S = \alpha\,U\,Z\,U^T, \quad \mbox{ with $U$ orthogonal} \\
+        &  \quad\Rightarrow\quad  S = U\,Z_{\alpha}\,U^T
+\end{align*}
+where
+\begin{equation}
+Z =
+\begin{pmatrix}
+  0 & 1  & 0 \\
+ -1 &  0  & 0 \\
+  0 &  0  & 1
+\end{pmatrix}, \quad\quad\quad
+Z_{\alpha} =
+\begin{pmatrix}
+  0 & \alpha  & 0 \\
+ -\alpha &  0  & 0 \\
+  0 &  0  & 1
+\end{pmatrix}
+\end{equation}
+Taking
+\begin{align}
+S\,S^T & = U\,Z_{\alpha}\,U^T (U\,Z_{\alpha}\,U^T)^T \nonumber \\
+       & = U\,Z_{\alpha}\,(U^T U)\,Z_{\alpha}^T\,U^T \nonumber \\
+       & = U\,Z_{\alpha}\,Z_{\alpha}^T\,U^T \label{eq:similar_matrix}
+\end{align}
+From (\ref{eq:similar_matrix}),
+\begin{align}
+S\,S^T \mbox{ and } Z_{\alpha}\,Z_{\alpha}^T \mbox{ are similar matrices } & \quad\Rightarrow\quad tr(S\,S^T) = tr(Z_{\alpha}\,Z_{\alpha}^T) \label{eq:equal_trace}
+\end{align}
+By expansion,
+\begin{equation}
+S\,S^T =
+\begin{pmatrix}
+  t_3^2 + t_2^2 & 0  & 0 \\
+  0 &  t_1^2 + t_3^2  & 0 \\
+  0 &  0  & t_2^2 + t_1^2
+\end{pmatrix}
+\end{equation}
+then,
+\begin{equation}
+\label{eq:S_trace}
+tr(S\,S^T) = (t_1^2 + t_2^2 + t_3^2) + (t_1^2 + t_2^2 + t_3^2) = 2\,||t||^2 = 2\,k^2
+\end{equation}
+In the other hand (by expansion),
+\begin{equation}
+\label{eq:Z_trace}
+tr(Z_{\alpha}\,Z_{\alpha}^T) =
+tr\,\begin{pmatrix}
+  \alpha^2 & 0  & 0 \\
+  0 &  \alpha^2  & 0 \\
+  0 &  0  & 0
+\end{pmatrix} = 2\,\alpha^2
+\end{equation}
+From (\ref{eq:similar_matrix}), (\ref{eq:S_trace}) and  (\ref{eq:Z_trace}),
+\begin{equation}
+\alpha^2 = k^2
+\end{equation}
+and also
+\begin{equation}
+\label{eq:ZZT}
+Z_{\alpha}\,Z_{\alpha}^T =
+\begin{pmatrix}
+  k^2 & 0  & 0 \\
+  0 &  k^2  & 0 \\
+  0 &  0  & 0
+\end{pmatrix}
+\end{equation}
+Now, since $Z_{\alpha}\,Z_{\alpha}^T$ diagonal, and $U$ is orthogonal (symmetric), it is possible to use lemma (\ref{lemma:symmetric}) then,
+\begin{equation}
+\label{eq:SST_same_ZZT}
+\mbox{$S\,S^T$ has the same eigenvalues than $Z_{\alpha}\,Z_{\alpha}^T$}
+\end{equation}
+
+\begin{center}
+\line(1,0){250}
+\end{center}
+
+Now, we start from the hypothesis:
+\begin{align}
+\label{eq:EET_same_SST}
+E=S\,R & \quad\Rightarrow\quad E\,E^T = S\,R\,(S\,R)^T = S\,R\,R^T\,S^T = S\,S^T
+\end{align}
+From (\ref{eq:SST_same_ZZT}) and (\ref{eq:EET_same_SST}),
+\begin{equation}
+\label{eq:EET_same_ZZT}
+\mbox{$E\,E^T$ has the same eigenvalues than $Z_{\alpha}\,Z_{\alpha}^T$}
+\end{equation}
+Then,
+\begin{equation}
+E \mbox{ has two singular values equal to $k$ and the last one is zero.}
+\end{equation}
+and,
+\begin{equation}
+E = U\, diag(k,k,0)\,V^T            \quad\quad\mbox{a SVD decomposition}
+\end{equation}
+
+
+\end{proof}
 
